@@ -8,7 +8,15 @@ export const performMigrations = async (pool: Pool) => {
     console.log(
       `Running DB migration ${i + 1}/${migrations.length}: ${migration.comment}`
     );
-    await migration.fn(pool);
+
+    await pool.query("BEGIN");
+    try {
+      await migration.fn(pool);
+    } catch {
+      await pool.query("ROLLBACK");
+      throw new Error(`MIGRATION ${i + 1} FAILED!!! (${migration.comment})`);
+    }
+    await pool.query("COMMIT");
   }
 
   console.log("DB migrations complete");
@@ -38,6 +46,7 @@ const migrations: Migration[] = [
           id SERIAL PRIMARY KEY,
           username TEXT NOT NULL,
           pwd_hash TEXT NOT NULL,
+          active BOOLEAN NOT NULL DEFAULT TRUE,
           picture TEXT,
         );
       `);

@@ -1,0 +1,9 @@
+{
+  "name": "Choors",
+  "version": "1.0.0",
+  "description": "Choors API Documentation",
+  "title": "Choors API Docs",
+  "template": {
+    "showRequiredLabels": true
+  }
+}
