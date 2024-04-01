@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import {
-    AccountRepository,
-    VerifyPersonStatus,
+  IAccountRepository,
+  VerifyPersonStatus,
 } from "../../../../repositories/AccountRepository";
 
 export class LoginService {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
   async login(request: Request, response: Response) {
     const username = request.params.username;

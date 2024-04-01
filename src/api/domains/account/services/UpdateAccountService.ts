@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { AccountRepository } from "../../../../repositories/AccountRepository";
+import {
+  IAccountRepository
+} from "../../../../repositories/AccountRepository";
 
 export class UpdateAccountService {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async updateAccount(request: Request, response: Response) {
-    
-  }
+  async updateAccount(request: Request, response: Response) {}
 }

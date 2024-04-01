@@ -1,11 +1,11 @@
 import express from "express";
-import { AccountRepository } from "../repositories/AccountRepository";
+import { IAccountRepository } from "../repositories/AccountRepository";
 import { TaskRepository } from "../repositories/TaskRepository";
 import { accountRouter } from "./domains/account/account-router";
 
 export const buildAndServeApi = (
   taskRepository: TaskRepository,
-  accountRepository: AccountRepository
+  accountRepository: IAccountRepository
 ) => {
   const app = express();
 

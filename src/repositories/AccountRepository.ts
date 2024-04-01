@@ -41,7 +41,21 @@ export type DeleteAccountResult = {
   status: DeleteAccountStatus;
 };
 
-export class AccountRepository {
+export interface IAccountRepository {
+  registerPerson(
+    username: string,
+    password: string
+  ): Promise<RegisterPersonResult>;
+
+  verifyPerson(username: string, password: string): Promise<VerifyPersonResult>;
+
+  deleteAccount(
+    username: string,
+    password: string
+  ): Promise<DeleteAccountResult>;
+}
+
+export class AccountRepository implements IAccountRepository {
   constructor(private dbPool: Pool) {}
 
   async registerPerson(

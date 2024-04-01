@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { AccountRepository } from "../../../repositories/AccountRepository";
+import {
+  IAccountRepository
+} from "../../../repositories/AccountRepository";
 import { DeleteAccountService } from "./services/DeleteAccountService";
 import { LoginService } from "./services/LoginService";
 import { RegisterService } from "./services/RegisterService";
 import { UpdateAccountService } from "./services/UpdateAccountService";
 
-export const accountRouter = (accountRepository: AccountRepository) => {
+export const accountRouter = (accountRepository: IAccountRepository) => {
   const router = Router();
   const registerService = new RegisterService(accountRepository);
   const loginService = new LoginService(accountRepository);

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import {
-    AccountRepository,
-    DeleteAccountStatus,
+  DeleteAccountStatus,
+  IAccountRepository
 } from "../../../../repositories/AccountRepository";
 
 export class DeleteAccountService {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
   async deleteAccount(request: Request, response: Response) {
     const username = request.params.username;

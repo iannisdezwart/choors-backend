@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import {
-    AccountRepository,
-    RegisterPersonStatus,
+  IAccountRepository,
+  RegisterPersonStatus
 } from "../../../../repositories/AccountRepository";
 
 export class RegisterService {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
   async registerPerson(request: Request, response: Response) {
     const { username, password } = request.body;
