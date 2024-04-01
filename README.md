@@ -8,12 +8,11 @@ It works with a point and penalty system to encourage participation.
 This backend is written in Node.js and uses Express.js for the server.
 API is documented using ApiDoc.
 
-## Installation
-```sh
-npm install
-```
-
 ## Usage
+
+1. Copy the `.env.example` file to `.env` and fill in the necessary values.
+
+2. Run the following command to start the server:
 ```sh
-npm start
+docker-compose up
 ```
