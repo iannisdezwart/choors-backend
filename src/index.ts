@@ -1,12 +1,13 @@
 import { buildAndServeApi } from "./api/index.js";
 import { connectToDb } from "./db/index.js";
 import { setupEnv } from "./env/setup-env.js";
-import { AccountRepository } from "./repositories/AccountRepository.js";
-import { GroupRepository } from "./repositories/GroupRepository.js";
-import { HouseRepository } from "./repositories/HouseRepository.js";
-import { PersonRepository } from "./repositories/PersonRepository.js";
-import { PictureRepository } from "./repositories/PictureRepository.js";
-import { TaskRepository } from "./repositories/TaskRepository.js";
+import { AccountRepository } from "./repositories/domains/account/AccountRepository.js";
+import { GroupRepository } from "./repositories/domains/group/GroupRepository.js";
+import { HouseRepository } from "./repositories/domains/house/HouseRepository.js";
+import { PersonRepository } from "./repositories/domains/person/PersonRepository.js";
+import { PictureRepository } from "./repositories/domains/picture/PictureRepository.js";
+import { ScheduleRepository } from "./repositories/domains/schedule/ScheduleRepository.js";
+import { TaskRepository } from "./repositories/domains/task/TaskRepository.js";
 
 const main = async () => {
   setupEnv();
@@ -17,6 +18,7 @@ const main = async () => {
   const houseRepository = new HouseRepository(dbPool);
   const groupRepository = new GroupRepository(dbPool);
   const personRepository = new PersonRepository(dbPool);
+  const scheduleRepository = new ScheduleRepository(dbPool);
 
   buildAndServeApi(
     taskRepository,
@@ -24,7 +26,8 @@ const main = async () => {
     pictureRepository,
     houseRepository,
     groupRepository,
-    personRepository
+    personRepository,
+    scheduleRepository
   );
 };
 

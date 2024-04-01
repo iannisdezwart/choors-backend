@@ -1,5 +1,5 @@
 import { Router, json } from "express";
-import { IHouseRepository } from "../../../repositories/IHouseRepository";
+import { IHouseRepository } from "../../../repositories/domains/house/IHouseRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { CreateHouseService } from "./services/CreateHouseService";
 import { DeleteHouseService } from "./services/DeleteHouseService";

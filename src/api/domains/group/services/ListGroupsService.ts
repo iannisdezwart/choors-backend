@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     IGroupRepository,
     ListGroupsStatus,
-} from "../../../../repositories/IGroupRepository";
+} from "../../../../repositories/domains/group/IGroupRepository";
 import { IService } from "../../../util/IService";
 
 export class ListGroupsService implements IService {

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   DeleteAccountStatus,
   IAccountRepository,
-} from "../../../../repositories/IAccountRepository";
+} from "../../../../repositories/domains/account/IAccountRepository";
 import { IService } from "../../../util/IService";
 
 export class DeleteAccountService implements IService {

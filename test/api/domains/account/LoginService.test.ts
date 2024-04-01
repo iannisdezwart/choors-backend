@@ -4,7 +4,7 @@ import { makeAccountRepositoryMock } from "../../../repositories/AccountReposito
 import {
   VerifyPersonResult,
   VerifyPersonStatus
-} from "../../../repositories/IAccountRepository.js";
+} from "../../../repositories/domains/account/IAccountRepository.js";
 
 beforeAll(() => {
   process.env.JWT_SECRET = "secret";

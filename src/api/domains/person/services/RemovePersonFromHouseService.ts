@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     IPersonRepository,
     RemovePersonFromHouseStatus,
-} from "../../../../repositories/IPersonRepository";
+} from "../../../../repositories/domains/person/IPersonRepository";
 import { IService } from "../../../util/IService";
 
 export class RemovePersonFromHouseService implements IService {

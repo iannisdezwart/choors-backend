@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     IPictureRepository,
     RetrievePictureStatus,
-} from "../../../../repositories/IPictureRepository";
+} from "../../../../repositories/domains/picture/IPictureRepository";
 import { IService } from "../../../util/IService";
 
 export class GetPictureService implements IService {

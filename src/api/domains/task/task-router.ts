@@ -1,5 +1,5 @@
 import { Router, json } from "express";
-import { ITaskRepository } from "../../../repositories/ITaskRepository";
+import { ITaskRepository } from "../../../repositories/domains/task/ITaskRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id";

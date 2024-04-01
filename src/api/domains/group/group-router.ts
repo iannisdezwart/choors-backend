@@ -1,5 +1,5 @@
 import { Router, json } from "express";
-import { IGroupRepository } from "../../../repositories/IGroupRepository";
+import { IGroupRepository } from "../../../repositories/domains/group/IGroupRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { ListGroupsService } from "./services/ListGroupsService";

@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import {
   IAccountRepository,
   UpdatePictureStatus,
-} from "../../../../repositories/IAccountRepository";
+} from "../../../../repositories/domains/account/IAccountRepository";
 import {
   IPictureRepository,
   StorePictureStatus,
-} from "../../../../repositories/IPictureRepository";
-import { PictureRepository } from "../../../../repositories/PictureRepository";
+} from "../../../../repositories/domains/picture/IPictureRepository";
+import { PictureRepository } from "../../../../repositories/domains/picture/PictureRepository";
 import { IService } from "../../../util/IService";
 
 export class UpdatePictureService implements IService {

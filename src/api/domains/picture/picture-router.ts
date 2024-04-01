@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { IPictureRepository } from "../../../repositories/IPictureRepository";
+import { IPictureRepository } from "../../../repositories/domains/picture/IPictureRepository";
 import { GetPictureService } from "./services/GetPictureService";
 
 export const pictureRouter = (

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     CreateTaskStatus,
     ITaskRepository,
-} from "../../../../repositories/ITaskRepository";
+} from "../../../../repositories/domains/task/ITaskRepository";
 import { IService } from "../../../util/IService";
 
 export class CreateTaskService implements IService {

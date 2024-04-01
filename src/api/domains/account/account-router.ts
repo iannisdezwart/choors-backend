@@ -1,6 +1,6 @@
 import { Router, json } from "express";
-import { IAccountRepository } from "../../../repositories/IAccountRepository";
-import { IPictureRepository } from "../../../repositories/IPictureRepository";
+import { IAccountRepository } from "../../../repositories/domains/account/IAccountRepository";
+import { IPictureRepository } from "../../../repositories/domains/picture/IPictureRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { passwordBodyValidationMiddleware } from "../../middleware/validation/password-body";
 import { usernameBodyValidationMiddleware } from "../../middleware/validation/username-body";

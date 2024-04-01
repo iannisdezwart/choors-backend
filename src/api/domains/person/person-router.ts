@@ -1,5 +1,5 @@
 import { Router, json } from "express";
-import { IPersonRepository } from "../../../repositories/IPersonRepository";
+import { IPersonRepository } from "../../../repositories/domains/person/IPersonRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id";

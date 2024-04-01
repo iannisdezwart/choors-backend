@@ -1,3 +1,5 @@
+import { BriefCompletedTaskEntry, BriefScheduledTaskEntry } from "../../common/types";
+
 export interface IPersonRepository {
   listPersons(personId: string, houseId: string): Promise<ListPersonsResult>;
 
@@ -49,24 +51,8 @@ export type GetPersonDetailsResult = {
 
 export type DetailedPerson = BriefPerson & {
   groups: string[];
-  schedule: BriefScheduleEntry[];
-  historicalTasks: BriefHistoricalTaskEntry[];
-};
-
-export type BriefScheduleEntry = {
-  id: string;
-  name: string;
-  dueDate: Date;
-  points: number;
-};
-
-export type BriefHistoricalTaskEntry = {
-  id: string;
-  name: string;
-  points: number;
-  penalty: number;
-  dueDate: Date;
-  isPenalised: boolean;
+  schedule: BriefScheduledTaskEntry[];
+  historicalTasks: BriefCompletedTaskEntry[];
 };
 
 export enum GetPersonDetailsStatus {

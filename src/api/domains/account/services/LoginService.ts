@@ -3,7 +3,7 @@ import { sign } from "jsonwebtoken";
 import {
   IAccountRepository,
   VerifyPersonStatus,
-} from "../../../../repositories/IAccountRepository";
+} from "../../../../repositories/domains/account/IAccountRepository";
 import { IService } from "../../../util/IService";
 
 export class LoginService implements IService {

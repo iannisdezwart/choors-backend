@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
     GetHousesForPersonStatus,
     IHouseRepository,
-} from "../../../../repositories/IHouseRepository";
+} from "../../../../repositories/domains/house/IHouseRepository";
 import { IService } from "../../../util/IService";
 
 export class ListMyHousesService implements IService {

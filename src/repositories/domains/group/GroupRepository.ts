@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 import {
-    Group,
-    IGroupRepository,
-    ListGroupsResult,
-    ListGroupsStatus,
-    UpdateGroupsResult,
-    UpdateGroupsStatus,
+  Group,
+  IGroupRepository,
+  ListGroupsResult,
+  ListGroupsStatus,
+  UpdateGroupsResult,
+  UpdateGroupsStatus,
 } from "./IGroupRepository";
 
 export class GroupRepository implements IGroupRepository {

@@ -1,4 +1,4 @@
-import { IAccountRepository } from "./IAccountRepository";
+import { IAccountRepository } from "./domains/account/IAccountRepository";
 
 export const makeAccountRepositoryMock = (): jest.Mocked<IAccountRepository> => ({
   registerPerson: jest.fn(),

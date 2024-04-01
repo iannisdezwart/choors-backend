@@ -1,14 +1,14 @@
 import { Pool } from "pg";
 import {
-    GetPersonDetailsResult,
-    GetPersonDetailsStatus,
-    IPersonRepository,
-    ListPersonsResult,
-    ListPersonsStatus,
-    RemovePersonFromHouseResult,
-    RemovePersonFromHouseStatus,
-    UpdatePersonGroupsResult,
-    UpdatePersonGroupsStatus,
+  GetPersonDetailsResult,
+  GetPersonDetailsStatus,
+  IPersonRepository,
+  ListPersonsResult,
+  ListPersonsStatus,
+  RemovePersonFromHouseResult,
+  RemovePersonFromHouseStatus,
+  UpdatePersonGroupsResult,
+  UpdatePersonGroupsStatus,
 } from "./IPersonRepository";
 
 export class PersonRepository implements IPersonRepository {
