@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: choors_backend
+    restart: always
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db:
+    container_name: choors_db
+    image: postgres:16.2
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - data:/data/db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+volumes:
+  data: {}
