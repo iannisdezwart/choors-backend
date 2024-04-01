@@ -3,10 +3,12 @@ import {
   IScheduleRepository,
   MarkCompletedTaskUndoneStatus,
 } from "../../../../repositories/domains/schedule/IScheduleRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class MarkCompletedTaskUndoneService implements IService {
-  constructor(private scheduleRepository: IScheduleRepository) {}
+export class MarkCompletedTaskUndoneService extends AService {
+  constructor(private scheduleRepository: IScheduleRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;

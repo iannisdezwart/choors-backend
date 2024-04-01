@@ -1,14 +1,11 @@
 import { Request, Response } from "express";
-import { LoginService } from "../../../../src/api/domains/account/services/LoginService.js";
-import { makeAccountRepositoryMock } from "../../../repositories/AccountRepositoryMock.js";
+import { LoginService } from "../../../../api/domains/account/services/LoginService.js";
+import { Environment } from "../../../../env/Environment.js";
 import {
   VerifyPersonResult,
-  VerifyPersonStatus
-} from "../../../repositories/domains/account/IAccountRepository.js";
-
-beforeAll(() => {
-  process.env.JWT_SECRET = "secret";
-});
+  VerifyPersonStatus,
+} from "../../../../repositories/domains/account/IAccountRepository.js";
+import { makeAccountRepositoryMock } from "../../../repositories/AccountRepositoryMock.js";
 
 test("happy path", async () => {
   const mockedAccountRepository = makeAccountRepositoryMock();
@@ -22,7 +19,8 @@ test("happy path", async () => {
     },
   } as VerifyPersonResult);
 
-  const loginService = new LoginService(mockedAccountRepository);
+  const mockEnv = {} as Environment;
+  const loginService = new LoginService(mockedAccountRepository, mockEnv);
 
   const mockedResponse = {
     status: jest.fn().mockReturnThis(),
@@ -38,7 +36,7 @@ test("happy path", async () => {
     },
   } as any as Request;
 
-  await loginService.login(request, mockedResponse);
+  await loginService.run(request, mockedResponse);
 
   expect(mockedResponse.status).toHaveBeenCalledWith(200);
   expect(mockedResponse.send).toHaveBeenCalledWith({

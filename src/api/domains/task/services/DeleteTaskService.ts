@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    DeleteTaskStatus,
-    ITaskRepository,
+  DeleteTaskStatus,
+  ITaskRepository,
 } from "../../../../repositories/domains/task/ITaskRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class DeleteTaskService implements IService {
-  constructor(private taskRepository: ITaskRepository) {}
+export class DeleteTaskService extends AService {
+  constructor(private taskRepository: ITaskRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;

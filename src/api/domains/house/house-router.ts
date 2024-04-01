@@ -1,20 +1,10 @@
 import { Router, json } from "express";
-import { IHouseRepository } from "../../../repositories/domains/house/IHouseRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
-import { CreateHouseService } from "./services/CreateHouseService";
-import { DeleteHouseService } from "./services/DeleteHouseService";
-import { JoinHouseService } from "./services/JoinHouseService";
-import { ListMyHousesService } from "./services/ListMyHousesService";
-import { UpdateHouseNameService } from "./services/UpdateHouseNameService";
+import { HouseServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 
-export const houseRouter = (houseRepository: IHouseRepository): Router => {
+export const houseRouter = (svc: HouseServices, env: Environment): Router => {
   const router = Router();
-
-  const listMyHousesService = new ListMyHousesService(houseRepository);
-  const createHouseService = new CreateHouseService(houseRepository);
-  const deleteHouseService = new DeleteHouseService(houseRepository);
-  const updateHouseNameService = new UpdateHouseNameService(houseRepository);
-  const joinHouseService = new JoinHouseService(houseRepository);
 
   /**
    * @api {get} /v1/house/mine List my houses.
@@ -34,8 +24,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    */
   router.get(
     "/v1/house/mine",
-    jwtPersonAuthenticationMiddleware,
-    listMyHousesService.run.bind(listMyHousesService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.listMyHousesService.createHandler()
   );
 
   /**
@@ -63,8 +53,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
   router.post(
     "/v1/house",
     json,
-    jwtPersonAuthenticationMiddleware,
-    createHouseService.run.bind(createHouseService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.createHouseService.createHandler()
   );
 
   /**
@@ -92,8 +82,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
   router.delete(
     "/v1/house",
     json,
-    jwtPersonAuthenticationMiddleware,
-    deleteHouseService.run.bind(deleteHouseService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.deleteHouseService.createHandler()
   );
 
   /**
@@ -122,8 +112,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
   router.patch(
     "/v1/house/name",
     json,
-    jwtPersonAuthenticationMiddleware,
-    updateHouseNameService.run.bind(updateHouseNameService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.updateHouseNameService.createHandler()
   );
 
   /**
@@ -144,8 +134,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
   router.post(
     "/v1/houses/join",
     json,
-    jwtPersonAuthenticationMiddleware,
-    joinHouseService.run.bind(joinHouseService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.joinHouseService.createHandler()
   );
 
   return router;

@@ -1,23 +1,13 @@
 import { Router, json } from "express";
-import { ITaskRepository } from "../../../repositories/domains/task/ITaskRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { TaskServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id";
 import { createTaskRequestBodyValidationMiddleware } from "./middleware/validation/task-request";
-import { CreateTaskService } from "./services/CreateTaskService";
-import { DeleteTaskService } from "./services/DeleteTaskService";
-import { GetDetailedTaskService } from "./services/GetDetailedTaskService";
-import { GetTaskListService } from "./services/GetTaskListService";
-import { UpdateTaskService } from "./services/UpdateTaskService";
 
-export const taskRouter = (taskRepository: ITaskRepository): Router => {
+export const taskRouter = (svc: TaskServices, env: Environment): Router => {
   const router = Router();
-
-  const getTaskListService = new GetTaskListService(taskRepository);
-  const createTaskService = new CreateTaskService(taskRepository);
-  const getDetailedTaskService = new GetDetailedTaskService(taskRepository);
-  const updateTaskService = new UpdateTaskService(taskRepository);
-  const deleteTaskService = new DeleteTaskService(taskRepository);
 
   /**
    * @api {get} /v1/task/:houseId Get list of tasks.
@@ -49,9 +39,9 @@ export const taskRouter = (taskRepository: ITaskRepository): Router => {
    */
   router.get(
     "/v1/task/:houseId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
-    getTaskListService.run.bind(getTaskListService)
+    svc.getTaskListService.createHandler()
   );
 
   /**
@@ -102,10 +92,10 @@ export const taskRouter = (taskRepository: ITaskRepository): Router => {
   router.post(
     "/v1/task/:houseId",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     createTaskRequestBodyValidationMiddleware({ fieldsRequired: true }),
-    createTaskService.run.bind(createTaskService)
+    svc.createTaskService.createHandler()
   );
 
   /**
@@ -145,10 +135,10 @@ export const taskRouter = (taskRepository: ITaskRepository): Router => {
    */
   router.get(
     "/v1/task/:houseId/:taskId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     taskIdParamValidationMiddleware,
-    getDetailedTaskService.run.bind(getDetailedTaskService)
+    svc.getDetailedTaskService.createHandler()
   );
 
   /**
@@ -190,11 +180,11 @@ export const taskRouter = (taskRepository: ITaskRepository): Router => {
   router.patch(
     "/v1/task/:houseId/:taskId",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     taskIdParamValidationMiddleware,
     createTaskRequestBodyValidationMiddleware({ fieldsRequired: false }),
-    updateTaskService.run.bind(updateTaskService)
+    svc.updateTaskService.createHandler()
   );
 
   /**
@@ -225,10 +215,10 @@ export const taskRouter = (taskRepository: ITaskRepository): Router => {
   router.delete(
     "/v1/task/:houseId/:taskId",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     taskIdParamValidationMiddleware,
-    deleteTaskService.run.bind(deleteTaskService)
+    svc.deleteTaskService.createHandler()
   );
 
   return router;

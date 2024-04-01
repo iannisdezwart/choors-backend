@@ -1,13 +1,8 @@
 import { Router } from "express";
-import { IPictureRepository } from "../../../repositories/domains/picture/IPictureRepository";
-import { GetPictureService } from "./services/GetPictureService";
+import { PictureServices } from "../../../Bootstrap";
 
-export const pictureRouter = (
-  pictureRepository: IPictureRepository
-): Router => {
+export const pictureRouter = (svc: PictureServices): Router => {
   const router = Router();
-
-  const getPictureService = new GetPictureService(pictureRepository);
 
   /**
    * @api {get} /v1/picture/:handle Get picture by its handle.
@@ -25,10 +20,7 @@ export const pictureRouter = (
    * @apiError (Error 500) {Object} body Internal server error.
    * @apiError (Error 500) {String} body.error Error message.
    */
-  router.get(
-    "/v1/picture/:handle",
-    getPictureService.run.bind(getPictureService)
-  );
+  router.get("/v1/picture/:handle", svc.getPictureService.createHandler());
 
   return router;
 };

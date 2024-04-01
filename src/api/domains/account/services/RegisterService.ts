@@ -1,13 +1,19 @@
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
+import { Environment } from "../../../../env/Environment";
 import {
   IAccountRepository,
   RegisterPersonStatus,
 } from "../../../../repositories/domains/account/IAccountRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class RegisterService implements IService {
-  constructor(private readonly accountRepository: IAccountRepository) {}
+export class RegisterService extends AService {
+  constructor(
+    private readonly accountRepository: IAccountRepository,
+    private readonly env: Environment
+  ) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const { username, password } = request.body;
@@ -43,20 +49,12 @@ export class RegisterService implements IService {
         return response.status(500).json({ error: "Unknown error occurred." });
     }
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      console.error(
-        "RegisterService.run() - JWT_SECRET environment variable is not set."
-      );
-      return response.status(500).json({ error: "Unknown error occurred." });
-    }
-
     if (result.person == null) {
       console.error("RegisterService.run() - Person is null.");
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 
-    const token = sign({ personId: result.person.id }, secret);
+    const token = sign({ personId: result.person.id }, this.env.jwtSecret);
     return response.status(201).json({
       token,
       username: result.person.username,

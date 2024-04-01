@@ -1,22 +1,12 @@
 import { Router, json } from "express";
-import { IPersonRepository } from "../../../repositories/domains/person/IPersonRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { PersonServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id";
-import { GetPersonDetailsService } from "./services/GetPersonDetailsService";
-import { ListPersonsService } from "./services/ListPersonsService";
-import { RemovePersonFromHouseService } from "./services/RemovePersonFromHouseService";
-import { UpdatePersonGroupsService } from "./services/UpdatePersonGroupsService";
 
-export const personRouter = (personRepository: IPersonRepository): Router => {
+export const personRouter = (svc: PersonServices, env: Environment): Router => {
   const router = Router();
-
-  const listPersonsService = new ListPersonsService(personRepository);
-  const getPersonDetailsService = new GetPersonDetailsService(personRepository);
-  const updatePersonGroupsService = new UpdatePersonGroupsService(
-    personRepository
-  );
-  const removePersonFromHouseService= new RemovePersonFromHouseService(personRepository);
 
   /**
    * @api {get} /v1/person/:houseId List all persons in a house.
@@ -49,9 +39,9 @@ export const personRouter = (personRepository: IPersonRepository): Router => {
    */
   router.get(
     "/v1/person/:houseId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
-    listPersonsService.run.bind(listPersonsService)
+    svc.listPersonsService.createHandler()
   );
 
   /**
@@ -99,10 +89,10 @@ export const personRouter = (personRepository: IPersonRepository): Router => {
    */
   router.get(
     "/v1/person/:houseId/:personId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    getPersonDetailsService.run.bind(getPersonDetailsService)
+    svc.getPersonDetailsService.createHandler()
   );
 
   /**
@@ -135,10 +125,10 @@ export const personRouter = (personRepository: IPersonRepository): Router => {
   router.patch(
     "/v1/person/:houseId/:personId/groups",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    updatePersonGroupsService.run.bind(updatePersonGroupsService)
+    svc.updatePersonGroupsService.createHandler()
   );
 
   /**
@@ -168,10 +158,10 @@ export const personRouter = (personRepository: IPersonRepository): Router => {
    */
   router.delete(
     "/v1/person/:houseId/:personId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    removePersonFromHouseService.run.bind(removePersonFromHouseService)
+    svc.removePersonFromHouseService.createHandler()
   );
 
   return router;

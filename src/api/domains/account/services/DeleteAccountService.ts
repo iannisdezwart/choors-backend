@@ -3,10 +3,12 @@ import {
   DeleteAccountStatus,
   IAccountRepository,
 } from "../../../../repositories/domains/account/IAccountRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class DeleteAccountService implements IService {
-  constructor(private readonly accountRepository: IAccountRepository) {}
+export class DeleteAccountService extends AService {
+  constructor(private readonly accountRepository: IAccountRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const { username, password } = request.body;

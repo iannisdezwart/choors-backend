@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    GetPersonDetailsStatus,
-    IPersonRepository,
+  GetPersonDetailsStatus,
+  IPersonRepository,
 } from "../../../../repositories/domains/person/IPersonRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class GetPersonDetailsService implements IService {
-  constructor(private personRepository: IPersonRepository) {}
+export class GetPersonDetailsService extends AService {
+  constructor(private personRepository: IPersonRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;

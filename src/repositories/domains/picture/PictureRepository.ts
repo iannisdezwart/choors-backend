@@ -1,6 +1,7 @@
 import { fileTypeFromFile } from "file-type";
 import { createReadStream, createWriteStream, existsSync } from "fs";
 import path from "path";
+import { Environment } from "../../../env/Environment";
 import {
   IPictureRepository,
   RetrievePictureResult,
@@ -10,14 +11,14 @@ import {
 } from "./IPictureRepository";
 
 export class PictureRepository implements IPictureRepository {
-  static MAX_SIZE = 256 * 1024; // 256 KB
+  constructor(private readonly env: Environment) {}
 
   storePicture(
     handle: string,
     pictureStream: NodeJS.ReadableStream
   ): Promise<StorePictureResult> {
     return new Promise((resolve) => {
-      const basePath = path.resolve("storage/pictures");
+      const basePath = path.resolve(this.env.pictureStoragePath);
       const filePath = path.resolve(basePath, handle);
 
       if (!filePath.startsWith(basePath)) {
@@ -37,7 +38,7 @@ export class PictureRepository implements IPictureRepository {
       const dataListener = (chunk: Buffer) => {
         size += chunk.length;
 
-        if (size > PictureRepository.MAX_SIZE) {
+        if (size > this.env.pictureMaxSize) {
           outputStream.destroy();
           pictureStream.removeListener("data", dataListener);
           pictureStream.removeListener("end", endListener);

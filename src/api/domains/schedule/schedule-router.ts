@@ -1,41 +1,12 @@
 import { Router, json } from "express";
-import { IScheduleRepository } from "../../../repositories/domains/schedule/IScheduleRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { ScheduleServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
 import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id";
-import { ComplainAboutCompletedTaskService } from "./services/ComplainAboutTaskService";
-import { DelegateScheduledTaskService } from "./services/DelegateTaskService";
-import { GetCompletedTaskDetailsService } from "./services/GetCompletedTaskDetailsService";
-import { GetScheduleForPersonService } from "./services/GetScheduleForPersonService";
-import { GetScheduledTaskDetailsService } from "./services/GetScheduledTaskDetailsService";
-import { MarkCompletedTaskUndoneService } from "./services/MarkCompletedTaskUndoneService";
-import { MarkScheduledTaskDoneService } from "./services/MarkScheduledTaskDoneService";
 
-export const scheduleRouter = (
-  scheduleRepository: IScheduleRepository
-): Router => {
+export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router => {
   const router = Router();
-
-  const getScheduleForPersonService = new GetScheduleForPersonService(
-    scheduleRepository
-  );
-  const getScheduledTaskDetailsService = new GetScheduledTaskDetailsService(
-    scheduleRepository
-  );
-  const getCompletedTaskDetailsService = new GetCompletedTaskDetailsService(
-    scheduleRepository
-  );
-  const markScheduledTaskDoneService = new MarkScheduledTaskDoneService(
-    scheduleRepository
-  );
-  const markCompletedTaskUndoneService = new MarkCompletedTaskUndoneService(
-    scheduleRepository
-  );
-  const delegateScheduledTaskService = new DelegateScheduledTaskService(
-    scheduleRepository
-  );
-  const complainAboutCompletedTaskService =
-    new ComplainAboutCompletedTaskService(scheduleRepository);
 
   /**
    * @api {get} /v1/schedule/:houseId/for-person/:personId Get schedule for a person.
@@ -73,10 +44,10 @@ export const scheduleRouter = (
    */
   router.get(
     "/v1/schedule/:houseId/for-person/:personId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    getScheduleForPersonService.run.bind(getScheduleForPersonService)
+    svc.getScheduleForPersonService.createHandler()
   );
 
   /**
@@ -109,10 +80,10 @@ export const scheduleRouter = (
    */
   router.get(
     "/v1/schedule/:houseId/scheduled-task/:taskId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    getScheduledTaskDetailsService.run.bind(getScheduledTaskDetailsService)
+    svc.getScheduledTaskDetailsService.createHandler()
   );
 
   /**
@@ -147,10 +118,10 @@ export const scheduleRouter = (
    */
   router.get(
     "/v1/schedule/:houseId/completed-task/:taskId",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    getCompletedTaskDetailsService.run.bind(getCompletedTaskDetailsService)
+    svc.getCompletedTaskDetailsService.createHandler()
   );
 
   /**
@@ -178,10 +149,10 @@ export const scheduleRouter = (
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/mark-done",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    markScheduledTaskDoneService.run.bind(markScheduledTaskDoneService)
+    svc.markScheduledTaskDoneService.createHandler()
   );
 
   /**
@@ -209,10 +180,10 @@ export const scheduleRouter = (
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/mark-undone",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    markCompletedTaskUndoneService.run.bind(markCompletedTaskUndoneService)
+    svc.markCompletedTaskUndoneService.createHandler()
   );
 
   /**
@@ -243,10 +214,10 @@ export const scheduleRouter = (
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/delegate",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    delegateScheduledTaskService.run.bind(delegateScheduledTaskService)
+    svc.delegateScheduledTaskService.createHandler()
   );
 
   /**
@@ -277,12 +248,10 @@ export const scheduleRouter = (
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/complain",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
-    complainAboutCompletedTaskService.run.bind(
-      complainAboutCompletedTaskService
-    )
+    svc.complainAboutCompletedTaskService.createHandler()
   );
 
   return router;

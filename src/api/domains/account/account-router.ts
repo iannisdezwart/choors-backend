@@ -1,31 +1,12 @@
 import { Router, json } from "express";
-import { IAccountRepository } from "../../../repositories/domains/account/IAccountRepository";
-import { IPictureRepository } from "../../../repositories/domains/picture/IPictureRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { AccountServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { passwordBodyValidationMiddleware } from "../../middleware/validation/password-body";
 import { usernameBodyValidationMiddleware } from "../../middleware/validation/username-body";
-import { DeleteAccountService } from "./services/DeleteAccountService";
-import { LoginService } from "./services/LoginService";
-import { RegisterService } from "./services/RegisterService";
-import { UpdatePasswordService } from "./services/UpdatePasswordService";
-import { UpdatePictureService } from "./services/UpdatePictureService";
-import { UpdateUsernameService } from "./services/UpdateUsernameService";
 
-export const accountRouter = (
-  accountRepository: IAccountRepository,
-  pictureRepository: IPictureRepository
-) => {
+export const accountRouter = (svc: AccountServices, env: Environment) => {
   const router = Router();
-
-  const registerService = new RegisterService(accountRepository);
-  const loginService = new LoginService(accountRepository);
-  const deleteAccountService = new DeleteAccountService(accountRepository);
-  const updateUsernameService = new UpdateUsernameService(accountRepository);
-  const updatePasswordService = new UpdatePasswordService(accountRepository);
-  const updatePictureService = new UpdatePictureService(
-    accountRepository,
-    pictureRepository
-  );
 
   /**
    * @api {post} /v1/account Register a new account.
@@ -57,7 +38,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    registerService.run.bind(registerService)
+    svc.registerService.createHandler()
   );
 
   /**
@@ -93,7 +74,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    loginService.run.bind(loginService)
+    svc.loginService.createHandler()
   );
 
   /**
@@ -125,7 +106,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    deleteAccountService.run.bind(deleteAccountService)
+    svc.deleteAccountService.createHandler()
   );
 
   /**
@@ -160,7 +141,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    updateUsernameService.run.bind(updateUsernameService)
+    svc.updateUsernameService.createHandler()
   );
 
   /**
@@ -193,7 +174,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    updatePasswordService.run.bind(updatePasswordService)
+    svc.updatePasswordService.createHandler()
   );
 
   /**
@@ -224,8 +205,8 @@ export const accountRouter = (
    */
   router.patch(
     "/v1/account/picture",
-    jwtPersonAuthenticationMiddleware,
-    updatePictureService.run.bind(updatePictureService)
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    svc.updatePictureService.createHandler()
   );
 
   return router;

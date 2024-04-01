@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    IGroupRepository,
-    ListGroupsStatus,
+  IGroupRepository,
+  ListGroupsStatus,
 } from "../../../../repositories/domains/group/IGroupRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class ListGroupsService implements IService {
-  constructor(private groupRepository: IGroupRepository) {}
+export class ListGroupsService extends AService {
+  constructor(private groupRepository: IGroupRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const houseId = request.params.houseId;

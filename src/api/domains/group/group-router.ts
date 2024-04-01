@@ -1,15 +1,11 @@
 import { Router, json } from "express";
-import { IGroupRepository } from "../../../repositories/domains/group/IGroupRepository";
-import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { GroupServices } from "../../../Bootstrap";
+import { Environment } from "../../../env/Environment";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
-import { ListGroupsService } from "./services/ListGroupsService";
-import { UpdateGroupsService } from "./services/UpdateGroupsService";
 
-export const groupRouter = (groupRepository: IGroupRepository): Router => {
+export const groupRouter = (svc: GroupServices, env: Environment): Router => {
   const router = Router();
-
-  const listGroupsService = new ListGroupsService(groupRepository);
-  const updateGroupsService = new UpdateGroupsService(groupRepository);
 
   /**
    * @api {get} /v1/group/:houseId List all groups in a house.
@@ -39,9 +35,9 @@ export const groupRouter = (groupRepository: IGroupRepository): Router => {
    */
   router.get(
     "/v1/group",
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
-    listGroupsService.run.bind(listGroupsService)
+    svc.listGroupsService.createHandler()
   );
 
   /**
@@ -84,9 +80,9 @@ export const groupRouter = (groupRepository: IGroupRepository): Router => {
   router.patch(
     "/v1/group",
     json,
-    jwtPersonAuthenticationMiddleware,
+    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
-    updateGroupsService.run.bind(updateGroupsService)
+    svc.updateGroupsService.createHandler()
   );
 
   return router;

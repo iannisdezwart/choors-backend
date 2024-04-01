@@ -3,10 +3,12 @@ import {
   IAccountRepository,
   UpdatePasswordStatus,
 } from "../../../../repositories/domains/account/IAccountRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class UpdatePasswordService implements IService {
-  constructor(private readonly accountRepository: IAccountRepository) {}
+export class UpdatePasswordService extends AService {
+  constructor(private readonly accountRepository: IAccountRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const { username, password, newPassword } = request.body.password;

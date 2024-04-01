@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    ITaskRepository,
-    UpdateTaskStatus,
+  ITaskRepository,
+  UpdateTaskStatus,
 } from "../../../../repositories/domains/task/ITaskRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class UpdateTaskService implements IService {
-  constructor(private taskRepository: ITaskRepository) {}
+export class UpdateTaskService extends AService {
+  constructor(private taskRepository: ITaskRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;

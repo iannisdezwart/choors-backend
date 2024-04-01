@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Environment } from "../../../../env/Environment";
 import {
   IAccountRepository,
   UpdatePictureStatus,
@@ -7,14 +8,16 @@ import {
   IPictureRepository,
   StorePictureStatus,
 } from "../../../../repositories/domains/picture/IPictureRepository";
-import { PictureRepository } from "../../../../repositories/domains/picture/PictureRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class UpdatePictureService implements IService {
+export class UpdatePictureService extends AService {
   constructor(
     private readonly accountRepository: IAccountRepository,
-    private readonly pictureRepository: IPictureRepository
-  ) {}
+    private readonly pictureRepository: IPictureRepository,
+    private readonly env: Environment
+  ) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const authPersonId = response.locals.authenticatedPersonId;
@@ -29,7 +32,7 @@ export class UpdatePictureService implements IService {
       });
     }
 
-    if (bodySize != null && bodySize > PictureRepository.MAX_SIZE) {
+    if (bodySize != null && bodySize > this.env.pictureMaxSize) {
       return response
         .status(400)
         .json({ error: "Picture size must not exceed 256 KB." });

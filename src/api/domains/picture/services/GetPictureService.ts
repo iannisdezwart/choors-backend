@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    IPictureRepository,
-    RetrievePictureStatus,
+  IPictureRepository,
+  RetrievePictureStatus,
 } from "../../../../repositories/domains/picture/IPictureRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class GetPictureService implements IService {
-  constructor(private pictureRepository: IPictureRepository) {}
+export class GetPictureService extends AService {
+  constructor(private pictureRepository: IPictureRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const handle = request.params.handle;

@@ -1,11 +1,14 @@
 import express from "express";
-import { IAccountRepository } from "../repositories/domains/account/IAccountRepository";
-import { IGroupRepository } from "../repositories/domains/group/IGroupRepository";
-import { IHouseRepository } from "../repositories/domains/house/IHouseRepository";
-import { IPersonRepository } from "../repositories/domains/person/IPersonRepository";
-import { IPictureRepository } from "../repositories/domains/picture/IPictureRepository";
-import { IScheduleRepository } from "../repositories/domains/schedule/IScheduleRepository";
-import { ITaskRepository } from "../repositories/domains/task/ITaskRepository";
+import {
+  AccountServices,
+  GroupServices,
+  HouseServices,
+  PersonServices,
+  PictureServices,
+  ScheduleServices,
+  TaskServices,
+} from "../Bootstrap";
+import { Environment } from "../env/Environment";
 import { accountRouter } from "./domains/account/account-router";
 import { groupRouter } from "./domains/group/group-router";
 import { houseRouter } from "./domains/house/house-router";
@@ -15,28 +18,28 @@ import { scheduleRouter } from "./domains/schedule/schedule-router";
 import { taskRouter } from "./domains/task/task-router";
 
 export const buildAndServeApi = (
-  taskRepository: ITaskRepository,
-  accountRepository: IAccountRepository,
-  pictureRepository: IPictureRepository,
-  houseRepository: IHouseRepository,
-  groupRepository: IGroupRepository,
-  personRepository: IPersonRepository,
-  scheduleRepository: IScheduleRepository
+  env: Environment,
+  accountServices: AccountServices,
+  groupServices: GroupServices,
+  houseServices: HouseServices,
+  personServices: PersonServices,
+  pictureServices: PictureServices,
+  scheduleServices: ScheduleServices,
+  taskServices: TaskServices
 ) => {
   const app = express();
 
   // Register domain routers.
-  app.use(taskRouter(taskRepository));
-  app.use(accountRouter(accountRepository, pictureRepository));
-  app.use(pictureRouter(pictureRepository));
-  app.use(houseRouter(houseRepository));
-  app.use(groupRouter(groupRepository));
-  app.use(personRouter(personRepository));
-  app.use(scheduleRouter(scheduleRepository));
+  app.use(taskRouter(taskServices, env));
+  app.use(accountRouter(accountServices, env));
+  app.use(pictureRouter(pictureServices));
+  app.use(houseRouter(houseServices, env));
+  app.use(groupRouter(groupServices, env));
+  app.use(personRouter(personServices, env));
+  app.use(scheduleRouter(scheduleServices, env));
 
   // Start API.
-  const port = parseInt(process.env.PORT || "3000");
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  app.listen(env.apiPort, () => {
+    console.log(`Server is running on port ${env.apiPort}`);
   });
 };

@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import {
-    ComplainAboutTaskStatus,
-    IScheduleRepository,
+  ComplainAboutTaskStatus,
+  IScheduleRepository,
 } from "../../../../repositories/domains/schedule/IScheduleRepository";
-import { IService } from "../../../util/IService";
+import { AService } from "../../../util/IService";
 
-export class ComplainAboutCompletedTaskService implements IService {
-  constructor(private scheduleRepository: IScheduleRepository) {}
+export class ComplainAboutCompletedTaskService extends AService {
+  constructor(private scheduleRepository: IScheduleRepository) {
+    super();
+  }
 
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
