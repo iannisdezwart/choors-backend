@@ -39,6 +39,8 @@ const migrations: Migration[] = [
           picture TEXT,
           invite_code TEXT NOT NULL
         );
+
+        CREATE INDEX IF NOT EXISTS house_invite_code_idx ON house(invite_code);
       `);
 
       // Person table
@@ -50,6 +52,9 @@ const migrations: Migration[] = [
           active BOOLEAN NOT NULL DEFAULT TRUE,
           picture TEXT
         );
+
+        CREATE INDEX IF NOT EXISTS person_username_idx ON person(username);
+        CREATE INDEX IF NOT EXISTS person_active_idx ON person(active);
       `);
 
       // Person in house table
@@ -60,6 +65,8 @@ const migrations: Migration[] = [
 
           PRIMARY KEY(person_id, house_id)
         );
+
+        CREATE INDEX IF NOT EXISTS person_in_house_house_id_idx ON person_in_house(house_id);
       `);
 
       // Task group table
@@ -71,6 +78,8 @@ const migrations: Migration[] = [
 
           UNIQUE(name, house_id)
         );
+
+        CREATE INDEX IF NOT EXISTS task_group_house_id_idx ON task_group(house_id);
       `);
 
       // Person in task group table
@@ -81,6 +90,8 @@ const migrations: Migration[] = [
 
           PRIMARY KEY(person_id, task_group_id)
         );
+
+        CREATE INDEX IF NOT EXISTS person_in_task_group_task_group_id_idx ON person_in_task_group(task_group_id);
       `);
 
       // Task table
@@ -101,6 +112,10 @@ const migrations: Migration[] = [
 
           UNIQUE(name, house_id)
         );
+
+        CREATE INDEX IF NOT EXISTS task_house_id_idx ON task(house_id);
+        CREATE INDEX IF NOT EXISTS task_responsible_task_group_id_idx ON task(responsible_task_group_id);
+        CREATE INDEX IF NOT EXISTS task_active_idx ON task(active);
       `);
 
       // Scheduled task table
@@ -112,6 +127,9 @@ const migrations: Migration[] = [
           start_date DATE NOT NULL,
           due_date DATE NOT NULL
         );
+
+        CREATE INDEX IF NOT EXISTS scheduled_task_task_id_idx ON scheduled_task(task_id);
+        CREATE INDEX IF NOT EXISTS scheduled_task_responsible_person_id_idx ON scheduled_task(responsible_person_id);
       `);
 
       // Completed task table
@@ -127,6 +145,10 @@ const migrations: Migration[] = [
           penalty FLOAT NOT NULL,
           is_penalised BOOLEAN NOT NULL
         );
+
+        CREATE INDEX IF NOT EXISTS completed_task_task_id_idx ON completed_task(task_id);
+        CREATE INDEX IF NOT EXISTS completed_task_responsible_person_id_idx ON completed_task(responsible_person_id);
+        CREATE INDEX IF NOT EXISTS completed_task_is_penalised_idx ON completed_task(is_penalised);
       `);
 
       // Complaint table
@@ -139,6 +161,9 @@ const migrations: Migration[] = [
 
           PRIMARY KEY(completed_task_id, complainer_person_id)
         );
+
+        CREATE INDEX IF NOT EXISTS complaint_completed_task_id_idx ON complaint(completed_task_id);
+        CREATE INDEX IF NOT EXISTS complaint_complainer_person_id_idx ON complaint(complainer_person_id);
       `);
     },
   },
