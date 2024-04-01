@@ -8,23 +8,25 @@ import {
   StorePictureStatus,
 } from "../../../../repositories/IPictureRepository";
 import { PictureRepository } from "../../../../repositories/PictureRepository";
+import { IService } from "../../../util/IService";
 
-export class UpdatePictureService {
+export class UpdatePictureService implements IService {
   constructor(
     private readonly accountRepository: IAccountRepository,
     private readonly pictureRepository: IPictureRepository
   ) {}
 
-  async updatePicture(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const authPersonId = response.locals.authenticatedPersonId;
     const contentType = request.headers["content-type"] || "";
     const contentLength = request.headers["content-length"];
     const bodySize = contentLength ? parseInt(contentLength) : null;
 
     if (!["image/jpeg", "image/png", "image/webp"].includes(contentType)) {
-      return response
-        .status(400)
-        .json({ error: "Unsupported image type. Only JPEG, PNG, and WebP are supported." });
+      return response.status(400).json({
+        error:
+          "Unsupported image type. Only JPEG, PNG, and WebP are supported.",
+      });
     }
 
     if (bodySize != null && bodySize > PictureRepository.MAX_SIZE) {
@@ -48,7 +50,10 @@ export class UpdatePictureService {
       case StorePictureStatus.Success:
         break;
       default:
-        console.error("Unknown status:", storePictureResult.status);
+        console.error(
+          "UpdatePictureService.run() - Unknown status:",
+          storePictureResult.status
+        );
         return response.status(500).json({ error: "Unknown error occurred." });
     }
 
@@ -65,7 +70,10 @@ export class UpdatePictureService {
       case UpdatePictureStatus.UnknownError:
         return response.status(500).json({ error: "Unknown error occurred." });
       default:
-        console.error("Unknown status:", result.status);
+        console.error(
+          "UpdatePictureService.run() - Unknown status:",
+          result.status
+        );
         return response.status(500).json({ error: "Unknown error occurred." });
     }
   }

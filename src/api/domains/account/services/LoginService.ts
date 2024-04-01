@@ -4,11 +4,12 @@ import {
   IAccountRepository,
   VerifyPersonStatus,
 } from "../../../../repositories/IAccountRepository";
+import { IService } from "../../../util/IService";
 
-export class LoginService {
+export class LoginService implements IService {
   constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async login(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const { username, password } = request.body;
 
     const result = await this.accountRepository.verifyPerson(
@@ -25,18 +26,20 @@ export class LoginService {
       case VerifyPersonStatus.PersonNotFound:
         return response.status(404).json({ error: "User not found." });
       default:
-        console.error("Unknown status:", result.status);
+        console.error("LoginService.run() - Unknown status:", result.status);
         return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      console.error("JWT_SECRET environment variable is not set.");
+      console.error(
+        "LoginService.run() - JWT_SECRET environment variable is not set."
+      );
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     if (result.person == null) {
-      console.error("Person is null.");
+      console.error("LoginService.run() - Person is null.");
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 

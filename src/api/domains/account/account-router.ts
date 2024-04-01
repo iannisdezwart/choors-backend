@@ -57,7 +57,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    registerService.registerPerson.bind(registerService)
+    registerService.run.bind(registerService)
   );
 
   /**
@@ -93,7 +93,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    loginService.login.bind(loginService)
+    loginService.run.bind(loginService)
   );
 
   /**
@@ -125,7 +125,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    deleteAccountService.deleteAccount.bind(deleteAccountService)
+    deleteAccountService.run.bind(deleteAccountService)
   );
 
   /**
@@ -160,7 +160,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    updateUsernameService.updateAccount.bind(updateUsernameService)
+    updateUsernameService.run.bind(updateUsernameService)
   );
 
   /**
@@ -193,7 +193,7 @@ export const accountRouter = (
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
-    updatePasswordService.updatePassword.bind(updatePasswordService)
+    updatePasswordService.run.bind(updatePasswordService)
   );
 
   /**
@@ -226,7 +226,7 @@ export const accountRouter = (
   router.patch(
     "/v1/account/picture",
     jwtPersonAuthenticationMiddleware,
-    updatePictureService.updatePicture.bind(updatePictureService)
+    updatePictureService.run.bind(updatePictureService)
   );
 
   return router;

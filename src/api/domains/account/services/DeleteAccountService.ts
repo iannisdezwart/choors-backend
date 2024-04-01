@@ -3,11 +3,12 @@ import {
   DeleteAccountStatus,
   IAccountRepository,
 } from "../../../../repositories/IAccountRepository";
+import { IService } from "../../../util/IService";
 
-export class DeleteAccountService {
+export class DeleteAccountService implements IService {
   constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async deleteAccount(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const { username, password } = request.body;
 
     const result = await this.accountRepository.deleteAccount(
@@ -25,7 +26,10 @@ export class DeleteAccountService {
       case DeleteAccountStatus.UnknownError:
         return response.status(500).json({ error: "Unknown error occurred." });
       default:
-        console.error("Unknown status:", result.status);
+        console.error(
+          "DeleteAccountService.run() - Unknown status:",
+          result.status
+        );
         return response.status(500).json({ error: "Unknown error occurred." });
     }
   }

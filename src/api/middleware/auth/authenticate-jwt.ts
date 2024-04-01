@@ -1,7 +1,11 @@
 import { Handler } from "express";
 import { verify } from "jsonwebtoken";
 
-export const jwtPersonAuthenticationMiddleware: Handler = (request, response, next) => {
+export const jwtPersonAuthenticationMiddleware: Handler = (
+  request,
+  response,
+  next
+) => {
   const token = request.headers.authorization;
 
   if (!token) {
@@ -11,7 +15,9 @@ export const jwtPersonAuthenticationMiddleware: Handler = (request, response, ne
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {
-    console.error("JWT_SECRET environment variable is not set.");
+    console.error(
+      "jwtPersonAuthenticationMiddleware() - JWT_SECRET environment variable is not set."
+    );
     return response.status(500).send("Unknown error occurred.");
   }
 

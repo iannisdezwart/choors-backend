@@ -27,7 +27,7 @@ export const pictureRouter = (
    */
   router.get(
     "/v1/picture/:handle",
-    getPictureService.getPicture.bind(getPictureService)
+    getPictureService.run.bind(getPictureService)
   );
 
   return router;

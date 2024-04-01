@@ -3,11 +3,12 @@ import {
   IAccountRepository,
   UpdateUsernameStatus,
 } from "../../../../repositories/IAccountRepository";
+import { IService } from "../../../util/IService";
 
-export class UpdateUsernameService {
+export class UpdateUsernameService implements IService {
   constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async updateAccount(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const { username, password, newUsername } = request.body;
 
     if (!newUsername) {

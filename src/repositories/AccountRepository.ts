@@ -1,6 +1,14 @@
 import { compare, hash } from "bcrypt";
 import { Pool } from "pg";
-import { DeleteAccountStatus, IAccountRepository, RegisterPersonStatus, UpdatePasswordStatus, UpdatePictureStatus, UpdateUsernameStatus, VerifyPersonStatus } from "./IAccountRepository";
+import {
+  DeleteAccountStatus,
+  IAccountRepository,
+  RegisterPersonStatus,
+  UpdatePasswordStatus,
+  UpdatePictureStatus,
+  UpdateUsernameStatus,
+  VerifyPersonStatus,
+} from "./IAccountRepository";
 
 export class AccountRepository implements IAccountRepository {
   constructor(private dbPool: Pool) {}
@@ -23,7 +31,10 @@ export class AccountRepository implements IAccountRepository {
     );
 
     if (result.rowCount != 1 || result.rows[0] == null) {
-      console.error("Failed to insert new person.", result);
+      console.error(
+        "AccountRepository.registerPerson() - Failed to insert new person.",
+        result
+      );
       return { status: RegisterPersonStatus.UnknownError };
     }
 
@@ -116,7 +127,10 @@ export class AccountRepository implements IAccountRepository {
       await this.dbPool.query("COMMIT");
       return { status: DeleteAccountStatus.Success };
     } catch (exc) {
-      console.error("Exception deleting account:", exc);
+      console.error(
+        "AccountRepository.deleteAccount() - Exception deleting account:",
+        exc
+      );
       await this.dbPool.query("ROLLBACK");
       return { status: DeleteAccountStatus.UnknownError };
     }
@@ -172,7 +186,10 @@ export class AccountRepository implements IAccountRepository {
       await this.dbPool.query("COMMIT");
       return { status: UpdateUsernameStatus.Success };
     } catch (exc) {
-      console.error("Exception updating username:", exc);
+      console.error(
+        "AccountRepository.updateUsername() - Exception updating username:",
+        exc
+      );
       await this.dbPool.query("ROLLBACK");
       return { status: UpdateUsernameStatus.UnknownError };
     }
@@ -221,7 +238,10 @@ export class AccountRepository implements IAccountRepository {
       await this.dbPool.query("COMMIT");
       return { status: UpdatePasswordStatus.Success };
     } catch (exc) {
-      console.error("Exception updating password:", exc);
+      console.error(
+        "AccountRepository.updatePassword() - Exception updating password:",
+        exc
+      );
       await this.dbPool.query("ROLLBACK");
       return { status: UpdatePasswordStatus.UnknownError };
     }
@@ -258,7 +278,10 @@ export class AccountRepository implements IAccountRepository {
       await this.dbPool.query("COMMIT");
       return { status: UpdatePictureStatus.Success };
     } catch (exc) {
-      console.error("Exception updating picture:", exc);
+      console.error(
+        "AccountRepository.updatePicture() - Exception updating picture:",
+        exc
+      );
       await this.dbPool.query("ROLLBACK");
       return { status: UpdatePictureStatus.UnknownError };
     }

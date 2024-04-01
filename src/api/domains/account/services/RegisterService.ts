@@ -4,11 +4,12 @@ import {
   IAccountRepository,
   RegisterPersonStatus,
 } from "../../../../repositories/IAccountRepository";
+import { IService } from "../../../util/IService";
 
-export class RegisterService {
+export class RegisterService implements IService {
   constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async registerPerson(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const { username, password } = request.body;
 
     if (username.length < 3) {
@@ -38,23 +39,20 @@ export class RegisterService {
       case RegisterPersonStatus.UnknownError:
         return response.status(500).json({ error: "Unknown error occurred." });
       default:
-        console.error(
-          "RegisterService.registerPerson() - Unknown status:",
-          result.status
-        );
+        console.error("RegisterService.run() - Unknown status:", result.status);
         return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
       console.error(
-        "RegisterService.registerPerson() - JWT_SECRET environment variable is not set."
+        "RegisterService.run() - JWT_SECRET environment variable is not set."
       );
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     if (result.person == null) {
-      console.error("RegisterService.registerPerson() - Person is null.");
+      console.error("RegisterService.run() - Person is null.");
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 

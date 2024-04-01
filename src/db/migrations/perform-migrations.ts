@@ -36,7 +36,8 @@ const migrations: Migration[] = [
         CREATE TABLE IF NOT EXISTS house (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
-          picture TEXT
+          picture TEXT,
+          invite_code TEXT NOT NULL,
         );
       `);
 

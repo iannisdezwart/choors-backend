@@ -3,11 +3,12 @@ import {
     IPictureRepository,
     RetrievePictureStatus,
 } from "../../../../repositories/IPictureRepository";
+import { IService } from "../../../util/IService";
 
-export class GetPictureService {
+export class GetPictureService implements IService {
   constructor(private pictureRepository: IPictureRepository) {}
 
-  async getPicture(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const handle = request.params.handle;
 
     if (typeof handle !== "string") {
@@ -26,7 +27,10 @@ export class GetPictureService {
       case RetrievePictureStatus.Success:
         break;
       default:
-        console.error("Unknown status:", picture.status);
+        console.error(
+          "GetPictureService.run() - Unknown status:",
+          picture.status
+        );
         return response.status(500).send("Unknown error occurred.");
     }
 

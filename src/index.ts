@@ -2,6 +2,7 @@ import { buildAndServeApi } from "./api/index.js";
 import { connectToDb } from "./db/index.js";
 import { setupEnv } from "./env/setup-env.js";
 import { AccountRepository } from "./repositories/AccountRepository.js";
+import { HouseRepository } from "./repositories/HouseRepository.js";
 import { PictureRepository } from "./repositories/PictureRepository.js";
 import { TaskRepository } from "./repositories/TaskRepository.js";
 
@@ -11,8 +12,14 @@ const main = async () => {
   const taskRepository = new TaskRepository(dbPool);
   const accountRepository = new AccountRepository(dbPool);
   const pictureRepository = new PictureRepository();
+  const houseRepository = new HouseRepository(dbPool);
 
-  buildAndServeApi(taskRepository, accountRepository, pictureRepository);
+  buildAndServeApi(
+    taskRepository,
+    accountRepository,
+    pictureRepository,
+    houseRepository
+  );
 };
 
 main();

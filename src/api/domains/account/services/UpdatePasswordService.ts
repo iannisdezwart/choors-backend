@@ -3,11 +3,12 @@ import {
   IAccountRepository,
   UpdatePasswordStatus,
 } from "../../../../repositories/IAccountRepository";
+import { IService } from "../../../util/IService";
 
-export class UpdatePasswordService {
+export class UpdatePasswordService implements IService {
   constructor(private readonly accountRepository: IAccountRepository) {}
 
-  async updatePassword(request: Request, response: Response) {
+  async run(request: Request, response: Response) {
     const { username, password, newPassword } = request.body.password;
 
     if (!newPassword) {
@@ -17,11 +18,9 @@ export class UpdatePasswordService {
     }
 
     if (typeof newPassword !== "string") {
-      return response
-        .status(400)
-        .json({
-          error: "Unexpected type of 'newPassword' field. Expected string.",
-        });
+      return response.status(400).json({
+        error: "Unexpected type of 'newPassword' field. Expected string.",
+      });
     }
 
     if (newPassword.length < 8) {
@@ -46,7 +45,10 @@ export class UpdatePasswordService {
       case UpdatePasswordStatus.UnknownError:
         return response.status(500).json();
       default:
-        console.error("Unknown status:", result.status);
+        console.error(
+          "UpdatePasswordService.run() - Unknown status:",
+          result.status
+        );
         return response.status(500).json({ error: "Unknown error occurred." });
     }
   }
