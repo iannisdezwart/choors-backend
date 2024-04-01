@@ -43,12 +43,12 @@ export class LoginService implements IService {
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 
-    const token = sign({ person_id: result.person.id }, secret);
+    const token = sign({ personId: result.person.id }, secret);
     return response.status(200).json({
       token,
       username: result.person.username,
       picture: result.person.picture,
-      person_id: result.person.id,
+      personId: result.person.id,
     });
   }
 }

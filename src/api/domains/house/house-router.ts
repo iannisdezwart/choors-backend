@@ -22,6 +22,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    * @apiGroup House
    * @apiVersion 1.0.0
    *
+   * @apiHeader {String} authorization JWT token to authenticate the user.
+   *
    * @apiSuccess (Success 200) {Object[]} body The list of houses.
    * @apiSuccess (Success 200) {String} body.id The id of the house.
    * @apiSuccess (Success 200) {String} body.name The name of the house.
@@ -41,6 +43,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    * @apiName CreateHouse
    * @apiGroup House
    * @apiVersion 1.0.0
+   *
+   * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiBody {Object} body
    * @apiBody {String} body.name The name of the house.
@@ -69,8 +73,10 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    * @apiGroup House
    * @apiVersion 1.0.0
    *
+   * @apiHeader {String} authorization JWT token to authenticate the user.
+   *
    * @apiBody {Object} body
-   * @apiBody {String} body.house_id The id of the house.
+   * @apiBody {String} body.houseId The id of the house.
    *
    * @apiSuccess (Success 204) body
    *
@@ -96,8 +102,10 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    * @apiGroup House
    * @apiVersion 1.0.0
    *
+   * @apiHeader {String} authorization JWT token to authenticate the user.
+   *
    * @apiBody {Object} body
-   * @apiBody {String} body.house_id The id of the house.
+   * @apiBody {String} body.houseId The id of the house.
    * @apiBody {String} body.name The new name of the house.
    *
    * @apiSuccess (Success 204) body
@@ -123,6 +131,8 @@ export const houseRouter = (houseRepository: IHouseRepository): Router => {
    * @apiName JoinHouse
    * @apiGroup House
    * @apiVersion 1.0.0
+   *
+   * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiBody {Object} body
    * @apiBody {String} body.invite_code The invite code of the house.

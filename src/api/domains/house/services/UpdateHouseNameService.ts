@@ -10,13 +10,13 @@ export class UpdateHouseNameService implements IService {
 
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;
-    const houseId = request.body.house_id;
+    const houseId = request.body.houseId;
     const newName = request.body.new_name;
 
     if (!houseId) {
       return response
         .status(400)
-        .json({ error: "Missing required field 'house_id'." });
+        .json({ error: "Missing required field 'houseId'." });
     }
 
     if (typeof houseId !== "string") {

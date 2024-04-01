@@ -41,7 +41,7 @@ export const accountRouter = (
    * @apiSuccess (Success 201) {String} body.token JWT token to authenticate the user.
    * @apiSuccess (Success 201) {String} body.username The username of the account.
    * @apiSuccess (Success 201) {String} body.picture The handle of the profile picture.
-   * @apiSuccess (Success 201) {String} body.person_id The personId of the account.
+   * @apiSuccess (Success 201) {String} body.personId The personId of the account.
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.
@@ -74,7 +74,7 @@ export const accountRouter = (
    * @apiSuccess (Success 200) {String} body.token JWT token to authenticate the user.
    * @apiSuccess (Success 200) {String} body.username The username of the account.
    * @apiSuccess (Success 200) {String} body.picture The handle of the profile picture.
-   * @apiSuccess (Success 200) {String} body.person_id The personId of the account.
+   * @apiSuccess (Success 200) {String} body.personId The personId of the account.
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.
@@ -89,7 +89,7 @@ export const accountRouter = (
    * @apiError (Erorr 500) {String} body.error Error message.
    */
   router.post(
-    "/v1/account/:person_id",
+    "/v1/account/:personId",
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
@@ -121,7 +121,7 @@ export const accountRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.delete(
-    "/v1/account/:person_id",
+    "/v1/account/:personId",
     json,
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
@@ -201,7 +201,6 @@ export const accountRouter = (
    * @apiName UpdatePicture
    * @apiGroup Account
    * @apiVersion 1.0.0
-   * @apiDescription This endpoint is used to update the profile picture of an account.
    *
    * @apiHeader {String} authorization JWT token to authenticate the user.
    * @apiHeader {String="image/jpeg","image/png","image/webp"} Content-Type The mime type of the picture.

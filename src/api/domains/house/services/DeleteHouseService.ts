@@ -10,7 +10,7 @@ export class DeleteHouseService implements IService {
 
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;
-    const houseId = request.body.house_id;
+    const houseId = request.body.houseId;
 
     if (typeof houseId !== "string") {
       return response.status(400).json({

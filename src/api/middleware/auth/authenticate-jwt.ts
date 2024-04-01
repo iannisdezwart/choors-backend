@@ -28,7 +28,7 @@ export const jwtPersonAuthenticationMiddleware: Handler = (
       return response.status(401).send("Invalid token.");
     }
 
-    response.locals.authenticatedPersonId = payload.person_id;
+    response.locals.authenticatedPersonId = payload.personId;
     next();
   } catch (error) {
     return response.status(401).send("Invalid token.");
