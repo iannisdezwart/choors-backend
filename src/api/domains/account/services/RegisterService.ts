@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { sign } from "jsonwebtoken";
-import { Environment } from "../../../../env/Environment";
+import jwt from "jsonwebtoken";
+import { Environment } from "../../../../env/Environment.js";
 import {
   IAccountRepository,
   RegisterPersonStatus,
-} from "../../../../repositories/domains/account/IAccountRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/account/IAccountRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class RegisterService extends AService {
   constructor(
@@ -54,7 +54,7 @@ export class RegisterService extends AService {
       return response.status(500).json({ error: "Unknown error occurred." });
     }
 
-    const token = sign({ personId: result.person.id }, this.env.jwtSecret);
+    const token = jwt.sign({ personId: result.person.id }, this.env.jwtSecret);
     return response.status(201).json({
       token,
       username: result.person.username,

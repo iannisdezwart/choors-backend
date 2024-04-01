@@ -1,7 +1,7 @@
 import { Router, json } from "express";
-import { HouseServices } from "../../../Bootstrap";
-import { Environment } from "../../../env/Environment";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
+import { HouseServices } from "../../../Bootstrap.js";
+import { Environment } from "../../../env/Environment.js";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
 
 export const houseRouter = (svc: HouseServices, env: Environment): Router => {
   const router = Router();

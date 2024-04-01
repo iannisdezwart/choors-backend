@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import pg from "pg";
 import {
   Group,
   IGroupRepository,
@@ -6,10 +6,10 @@ import {
   ListGroupsStatus,
   UpdateGroupsResult,
   UpdateGroupsStatus,
-} from "./IGroupRepository";
+} from "./IGroupRepository.js";
 
 export class GroupRepository implements IGroupRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async listGroups(
     personId: string,

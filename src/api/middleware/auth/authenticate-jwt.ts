@@ -1,5 +1,5 @@
 import { Handler } from "express";
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const createJwtPersonAuthenticationMiddleware =
   (secret: string): Handler =>
@@ -11,7 +11,7 @@ export const createJwtPersonAuthenticationMiddleware =
     }
 
     try {
-      const payload = verify(token, secret);
+      const payload = jwt.verify(token, secret);
 
       if (typeof payload == "string") {
         return response.status(401).send("Invalid token.");

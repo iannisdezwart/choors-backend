@@ -1,4 +1,4 @@
-import { Environment } from "./Environment";
+import { Environment } from "./Environment.js";
 
 export interface IEnvironmentProvider {
   getEnvironment(): Environment;

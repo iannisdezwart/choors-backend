@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   GetTasksForHouseStatus,
   ITaskRepository,
-} from "../../../../repositories/domains/task/ITaskRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/task/ITaskRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class GetTaskListService extends AService {
   constructor(private taskRepository: ITaskRepository) {

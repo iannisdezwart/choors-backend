@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { LoginService } from "../../../../api/domains/account/services/LoginService.js";
-import { Environment } from "../../../../env/Environment.js";
+import { LoginService } from "../../../../../api/domains/account/services/LoginService.js";
+import { Environment } from "../../../../../env/Environment.js";
 import {
   VerifyPersonResult,
   VerifyPersonStatus,
-} from "../../../../repositories/domains/account/IAccountRepository.js";
+} from "../../../../../repositories/domains/account/IAccountRepository.js";
 import { makeAccountRepositoryMock } from "../../../repositories/AccountRepositoryMock.js";
 
 test("happy path", async () => {

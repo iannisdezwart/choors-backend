@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   DeleteHouseStatus,
   IHouseRepository,
-} from "../../../../repositories/domains/house/IHouseRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/house/IHouseRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class DeleteHouseService extends AService {
   constructor(private houseRepository: IHouseRepository) {

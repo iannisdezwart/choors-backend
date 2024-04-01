@@ -1,7 +1,7 @@
 import {
   BriefCompletedTaskEntry,
   BriefScheduledTaskEntry,
-} from "../../common/types";
+} from "../../common/types.js";
 
 export interface IScheduleRepository {
   getScheduleForPerson(

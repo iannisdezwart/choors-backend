@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import pg from "pg";
 import {
   CreateHouseResult,
   CreateHouseStatus,
@@ -11,10 +11,10 @@ import {
   JoinHouseStatus,
   UpdateHouseNameResult,
   UpdateHouseNameStatus,
-} from "./IHouseRepository";
+} from "./IHouseRepository.js";
 
 export class HouseRepository implements IHouseRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async getHousesForPerson(
     personId: string

@@ -1,10 +1,10 @@
 import { Router, json } from "express";
-import { TaskServices } from "../../../Bootstrap";
-import { Environment } from "../../../env/Environment";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
-import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id";
-import { createTaskRequestBodyValidationMiddleware } from "./middleware/validation/task-request";
+import { TaskServices } from "../../../Bootstrap.js";
+import { Environment } from "../../../env/Environment.js";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
+import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
+import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id.js";
+import { createTaskRequestBodyValidationMiddleware } from "./middleware/validation/task-request.js";
 
 export const taskRouter = (svc: TaskServices, env: Environment): Router => {
   const router = Router();

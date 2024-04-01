@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import pg from "pg";
 import {
   ComplainAboutTaskResult,
   ComplainAboutTaskStatus,
@@ -15,10 +15,10 @@ import {
   MarkCompletedTaskUndoneStatus,
   MarkScheduledTaskDoneResult,
   MarkScheduledTaskDoneStatus,
-} from "./IScheduleRepository";
+} from "./IScheduleRepository.js";
 
 export class ScheduleRepository implements IScheduleRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async getScheduleForPerson(
     reqPersonId: string,

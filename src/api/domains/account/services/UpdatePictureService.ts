@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { Environment } from "../../../../env/Environment";
+import { Environment } from "../../../../env/Environment.js";
 import {
   IAccountRepository,
   UpdatePictureStatus,
-} from "../../../../repositories/domains/account/IAccountRepository";
+} from "../../../../repositories/domains/account/IAccountRepository.js";
 import {
   IPictureRepository,
   StorePictureStatus,
-} from "../../../../repositories/domains/picture/IPictureRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/picture/IPictureRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class UpdatePictureService extends AService {
   constructor(

@@ -7,15 +7,15 @@ import {
   PictureServices,
   ScheduleServices,
   TaskServices,
-} from "../Bootstrap";
-import { Environment } from "../env/Environment";
-import { accountRouter } from "./domains/account/account-router";
-import { groupRouter } from "./domains/group/group-router";
-import { houseRouter } from "./domains/house/house-router";
-import { personRouter } from "./domains/person/person-router";
-import { pictureRouter } from "./domains/picture/picture-router";
-import { scheduleRouter } from "./domains/schedule/schedule-router";
-import { taskRouter } from "./domains/task/task-router";
+} from "../Bootstrap.js";
+import { Environment } from "../env/Environment.js";
+import { accountRouter } from "./domains/account/account-router.js";
+import { groupRouter } from "./domains/group/group-router.js";
+import { houseRouter } from "./domains/house/house-router.js";
+import { personRouter } from "./domains/person/person-router.js";
+import { pictureRouter } from "./domains/picture/picture-router.js";
+import { scheduleRouter } from "./domains/schedule/schedule-router.js";
+import { taskRouter } from "./domains/task/task-router.js";
 
 export const buildAndServeApi = (
   env: Environment,

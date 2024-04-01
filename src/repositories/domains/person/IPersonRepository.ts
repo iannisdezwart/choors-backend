@@ -1,4 +1,7 @@
-import { BriefCompletedTaskEntry, BriefScheduledTaskEntry } from "../../common/types";
+import {
+  BriefCompletedTaskEntry,
+  BriefScheduledTaskEntry,
+} from "../../common/types.js";
 
 export interface IPersonRepository {
   listPersons(personId: string, houseId: string): Promise<ListPersonsResult>;

@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   IPictureRepository,
   RetrievePictureStatus,
-} from "../../../../repositories/domains/picture/IPictureRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/picture/IPictureRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class GetPictureService extends AService {
   constructor(private pictureRepository: IPictureRepository) {

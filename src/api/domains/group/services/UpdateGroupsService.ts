@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   IGroupRepository,
   UpdateGroupsStatus,
-} from "../../../../repositories/domains/group/IGroupRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/group/IGroupRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class UpdateGroupsService extends AService {
   constructor(private groupRepository: IGroupRepository) {

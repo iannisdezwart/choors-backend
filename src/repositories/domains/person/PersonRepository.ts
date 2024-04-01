@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import pg from "pg";
 import {
   GetPersonDetailsResult,
   GetPersonDetailsStatus,
@@ -9,10 +9,10 @@ import {
   RemovePersonFromHouseStatus,
   UpdatePersonGroupsResult,
   UpdatePersonGroupsStatus,
-} from "./IPersonRepository";
+} from "./IPersonRepository.js";
 
 export class PersonRepository implements IPersonRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async listPersons(
     personId: string,

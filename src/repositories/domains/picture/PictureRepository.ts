@@ -1,14 +1,14 @@
 import { fileTypeFromFile } from "file-type";
 import { createReadStream, createWriteStream, existsSync } from "fs";
 import path from "path";
-import { Environment } from "../../../env/Environment";
+import { Environment } from "../../../env/Environment.js";
 import {
   IPictureRepository,
   RetrievePictureResult,
   RetrievePictureStatus,
   StorePictureResult,
   StorePictureStatus,
-} from "./IPictureRepository";
+} from "./IPictureRepository.js";
 
 export class PictureRepository implements IPictureRepository {
   constructor(private readonly env: Environment) {}

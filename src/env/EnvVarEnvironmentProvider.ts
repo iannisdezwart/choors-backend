@@ -1,7 +1,7 @@
 import bytes from "bytes";
 import dotenv from "dotenv";
-import { Environment } from "./Environment";
-import { IEnvironmentProvider } from "./IEnvironmentProvider";
+import { Environment } from "./Environment.js";
+import { IEnvironmentProvider } from "./IEnvironmentProvider.js";
 
 export class EnvVarEnvironmentProvider implements IEnvironmentProvider {
   getEnvironment(): Environment {

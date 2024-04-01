@@ -1,5 +1,5 @@
 import { compare, hash } from "bcrypt";
-import { Pool } from "pg";
+import pg from "pg";
 import {
   DeleteAccountStatus,
   IAccountRepository,
@@ -8,10 +8,10 @@ import {
   UpdatePictureStatus,
   UpdateUsernameStatus,
   VerifyPersonStatus,
-} from "./IAccountRepository";
+} from "./IAccountRepository.js";
 
 export class AccountRepository implements IAccountRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async registerPerson(username: string, password: string) {
     const existingUser = await this.dbPool.query(

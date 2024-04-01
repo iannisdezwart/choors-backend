@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   ComplainAboutTaskStatus,
   IScheduleRepository,
-} from "../../../../repositories/domains/schedule/IScheduleRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/schedule/IScheduleRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class ComplainAboutCompletedTaskService extends AService {
   constructor(private scheduleRepository: IScheduleRepository) {

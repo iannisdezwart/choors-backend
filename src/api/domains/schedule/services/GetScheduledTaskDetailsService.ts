@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   GetScheduledTaskDetailsStatus,
   IScheduleRepository,
-} from "../../../../repositories/domains/schedule/IScheduleRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/schedule/IScheduleRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class GetScheduledTaskDetailsService extends AService {
   constructor(private scheduleRepository: IScheduleRepository) {

@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   DeleteAccountStatus,
   IAccountRepository,
-} from "../../../../repositories/domains/account/IAccountRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/account/IAccountRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class DeleteAccountService extends AService {
   constructor(private readonly accountRepository: IAccountRepository) {

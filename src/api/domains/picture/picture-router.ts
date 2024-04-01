@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PictureServices } from "../../../Bootstrap";
+import { PictureServices } from "../../../Bootstrap.js";
 
 export const pictureRouter = (svc: PictureServices): Router => {
   const router = Router();

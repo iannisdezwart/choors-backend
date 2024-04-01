@@ -1,5 +1,5 @@
-import { Bootstrap } from "./Bootstrap";
-import { EnvVarEnvironmentProvider } from "./env/EnvVarEnvironmentProvider";
+import { Bootstrap } from "./Bootstrap.js";
+import { EnvVarEnvironmentProvider } from "./env/EnvVarEnvironmentProvider.js";
 
 const bootstrap = new Bootstrap();
 const envProvider = new EnvVarEnvironmentProvider();

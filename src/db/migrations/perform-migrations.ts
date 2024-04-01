@@ -1,6 +1,6 @@
-import { Pool } from "pg";
+import pg from "pg";
 
-export const performMigrations = async (pool: Pool) => {
+export const performMigrations = async (pool: pg.Pool) => {
   console.log("Performing DB migrations");
 
   for (let i = 0; i < migrations.length; i++) {
@@ -24,7 +24,7 @@ export const performMigrations = async (pool: Pool) => {
 
 type Migration = {
   comment: string;
-  fn: (pool: Pool) => Promise<void>;
+  fn: (pool: pg.Pool) => Promise<void>;
 };
 
 const migrations: Migration[] = [

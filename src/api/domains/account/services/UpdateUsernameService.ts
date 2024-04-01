@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   IAccountRepository,
   UpdateUsernameStatus,
-} from "../../../../repositories/domains/account/IAccountRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/account/IAccountRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class UpdateUsernameService extends AService {
   constructor(private readonly accountRepository: IAccountRepository) {

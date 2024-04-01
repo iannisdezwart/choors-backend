@@ -1,6 +1,10 @@
 import { Handler } from "express";
 
-export const passwordBodyValidationMiddleware: Handler = (request, response, next) => {
+export const passwordBodyValidationMiddleware: Handler = (
+  request,
+  response,
+  next
+) => {
   const password = request.body.password;
 
   if (!password) {

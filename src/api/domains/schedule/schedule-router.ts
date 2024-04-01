@@ -1,9 +1,9 @@
 import { Router, json } from "express";
-import { ScheduleServices } from "../../../Bootstrap";
-import { Environment } from "../../../env/Environment";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
-import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id";
+import { ScheduleServices } from "../../../Bootstrap.js";
+import { Environment } from "../../../env/Environment.js";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
+import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
+import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id.js";
 
 export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router => {
   const router = Router();

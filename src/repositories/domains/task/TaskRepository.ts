@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import pg from "pg";
 import {
   CreateTaskResult,
   CreateTaskStatus,
@@ -12,10 +12,10 @@ import {
   TaskRequest,
   UpdateTaskResult,
   UpdateTaskStatus,
-} from "./ITaskRepository";
+} from "./ITaskRepository.js";
 
 export class TaskRepository implements ITaskRepository {
-  constructor(private dbPool: Pool) {}
+  constructor(private dbPool: pg.Pool) {}
 
   async getTasksForHouse(
     personId: string,

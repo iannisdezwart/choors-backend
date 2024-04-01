@@ -1,9 +1,9 @@
 import { Router, json } from "express";
-import { AccountServices } from "../../../Bootstrap";
-import { Environment } from "../../../env/Environment";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
-import { passwordBodyValidationMiddleware } from "../../middleware/validation/password-body";
-import { usernameBodyValidationMiddleware } from "../../middleware/validation/username-body";
+import { AccountServices } from "../../../Bootstrap.js";
+import { Environment } from "../../../env/Environment.js";
+import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
+import { passwordBodyValidationMiddleware } from "../../middleware/validation/password-body.js";
+import { usernameBodyValidationMiddleware } from "../../middleware/validation/username-body.js";
 
 export const accountRouter = (svc: AccountServices, env: Environment) => {
   const router = Router();

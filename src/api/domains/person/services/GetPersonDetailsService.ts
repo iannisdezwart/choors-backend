@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import {
   GetPersonDetailsStatus,
   IPersonRepository,
-} from "../../../../repositories/domains/person/IPersonRepository";
-import { AService } from "../../../util/IService";
+} from "../../../../repositories/domains/person/IPersonRepository.js";
+import { AService } from "../../../util/AService.js";
 
 export class GetPersonDetailsService extends AService {
   constructor(private personRepository: IPersonRepository) {
