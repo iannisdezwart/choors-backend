@@ -112,7 +112,7 @@ export const createTasksFlow: EndToEndFlow = {
     const task1 = {
       name: "Task 1",
       description: "Description 1",
-      freqBase: new Date(),
+      freqBase: new Date("2024-04-02T00:00:00Z"),
       freqOffset: ms("7d"),
       timeLimit: ms("2d"),
       scheduleOffset: ms("1d"),
@@ -272,7 +272,7 @@ export const createTasksFlow: EndToEndFlow = {
     const task2 = {
       name: "Task 2",
       description: "Description 2",
-      freqBase: new Date(),
+      freqBase: new Date("2024-04-02T00:00:00Z"),
       freqOffset: ms("7d"),
       timeLimit: ms("2d"),
       scheduleOffset: ms("1d"),

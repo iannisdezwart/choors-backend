@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import ms from "ms";
 import {
   CreateTaskStatus,
   ITaskRepository,
@@ -25,6 +26,48 @@ export class CreateTaskService extends AService {
       penalty,
       responsibleTaskGroup,
     } = request.body;
+
+    const freqBaseDate = new Date(freqBase);
+
+    if (isNaN(freqBaseDate.getTime())) {
+      return response.status(400).json({ error: "Invalid freqBase." });
+    }
+
+    if (
+      freqBaseDate.getMinutes() != 0 ||
+      freqBaseDate.getSeconds() != 0 ||
+      freqBaseDate.getMilliseconds() != 0
+    ) {
+      return response.status(400).json({
+        error:
+          "Invalid task frequency (freqBase). Can only schedule tasks that occur on a whole hour.",
+      });
+    }
+
+    if (freqBaseDate.getTime() - Date.now() > ms("1y")) {
+      return response.status(400).json({
+        error:
+          "Invalid task frequency (freqBase). First instance of task must be less than a year in the future.",
+      });
+    }
+
+    if (typeof freqOffset !== "number") {
+      return response.status(400).json({ error: "Invalid freqOffset." });
+    }
+
+    if (freqOffset % ms("1h") != 0) {
+      return response.status(400).json({
+        error:
+          "Invalid task frequency (freqOffset). Task interval must be a multiple of an hour.",
+      });
+    }
+
+    if (freqOffset > ms("1y")) {
+      return response.status(400).json({
+        error:
+          "Invalid task frequency (freqOffset). Task interval must be less than a year.",
+      });
+    }
 
     const result = await this.taskRepository.createTask(personId, houseId, {
       name,
