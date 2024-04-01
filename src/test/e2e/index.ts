@@ -2,6 +2,13 @@ import bytes from "bytes";
 import { spawn } from "child_process";
 import { Bootstrap } from "../../Bootstrap.js";
 import { CustomEnvironmentProvider } from "../../env/CustomEnvironmentProvider.js";
+import { EndToEndFlow } from "./EndToEndFlow.js";
+import { registerFlow } from "./flows/register-flow.js";
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
 
 const startDb = () =>
   new Promise<void>((resolve) => {
@@ -63,6 +70,8 @@ const stopDb = (): Promise<void> =>
     });
   });
 
+const flows: EndToEndFlow[] = [registerFlow];
+
 const runEndToEndTests = async () => {
   console.log("Stopping db if running.");
   await stopDb();
@@ -84,15 +93,29 @@ const runEndToEndTests = async () => {
     pictureStoragePath: "/tmp",
   });
 
+  await sleep(1000);
+
   const bootstrap = new Bootstrap();
   await bootstrap.init(customEnvProvider);
   await bootstrap.run();
 
   console.log("Running tests.");
 
-  // Run tests here.
+  for (let i = 0; i < flows.length; i++) {
+    console.log(`Running flow ${i} (${flows[i].name}).`);
+    const flow = flows[i];
+    try {
+      await flow.fn();
+      console.log(`Flow ${i} (${flow.name}) passed.`);
+    } catch {
+      console.error(`Flow ${i} (${flow.name}) failed!!!`);
+    }
+  }
 
+  await bootstrap.shutdown();
   console.log("Tests complete.");
+
+  process.exit();
 };
 
 runEndToEndTests();

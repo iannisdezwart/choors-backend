@@ -148,7 +148,7 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/mark-done",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
@@ -179,7 +179,7 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/mark-undone",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
@@ -213,7 +213,7 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/delegate",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,
@@ -247,7 +247,7 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/complain",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,

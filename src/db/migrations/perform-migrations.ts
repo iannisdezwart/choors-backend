@@ -37,7 +37,7 @@ const migrations: Migration[] = [
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
           picture TEXT,
-          invite_code TEXT NOT NULL,
+          invite_code TEXT NOT NULL
         );
       `);
 

@@ -79,7 +79,7 @@ export const groupRouter = (svc: GroupServices, env: Environment): Router => {
    */
   router.patch(
     "/v1/group",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     svc.updateGroupsService.createHandler()

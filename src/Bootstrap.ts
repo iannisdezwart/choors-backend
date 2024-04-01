@@ -207,12 +207,14 @@ export class Bootstrap {
   private scheduleServices?: ScheduleServices;
   private taskServices?: TaskServices;
   private env?: Environment;
+  private dbPool?: pg.Pool;
+  server?: ReturnType<typeof buildAndServeApi>;
 
   public async init(envProvider: IEnvironmentProvider) {
     this.env = envProvider.getEnvironment();
-    const dbPool = await connectToDb(this.env);
+    this.dbPool = await connectToDb(this.env);
 
-    this.repositories = new Repositories(dbPool, this.env);
+    this.repositories = new Repositories(this.dbPool, this.env);
     this.accountServices = new AccountServices(
       this.repositories.accountRepository!,
       this.repositories.pictureRepository!,
@@ -233,7 +235,7 @@ export class Bootstrap {
   }
 
   public async run() {
-    buildAndServeApi(
+    this.server = buildAndServeApi(
       this.env!,
       this.accountServices!,
       this.groupServices!,
@@ -243,5 +245,12 @@ export class Bootstrap {
       this.scheduleServices!,
       this.taskServices!
     );
+  }
+
+  public async shutdown() {
+    await new Promise((resolve) => {
+      this.server!.close(resolve);
+    });
+    this.dbPool!.end();
   }
 }

@@ -4,6 +4,8 @@ export abstract class AService {
   abstract run(request: Request, response: Response): any;
 
   createHandler() {
-    return this.run.bind(this);
+    return (request: Request, response: Response) => {
+      this.run(request, response);
+    };
   }
 }

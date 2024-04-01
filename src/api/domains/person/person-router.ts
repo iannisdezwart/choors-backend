@@ -124,7 +124,7 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
    */
   router.patch(
     "/v1/person/:houseId/:personId/groups",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     personIdParamValidationMiddleware,

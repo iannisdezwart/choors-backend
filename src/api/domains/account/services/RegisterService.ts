@@ -21,13 +21,13 @@ export class RegisterService extends AService {
     if (username.length < 3) {
       return response
         .status(400)
-        .send("Username must be at least 3 characters long.");
+        .json({ error: "Username must be at least 3 characters long." });
     }
 
     if (password.length < 8) {
       return response
         .status(400)
-        .send("Password must be at least 8 characters long.");
+        .json({ error: "Password must be at least 8 characters long." });
     }
 
     const result = await this.accountRepository.registerPerson(

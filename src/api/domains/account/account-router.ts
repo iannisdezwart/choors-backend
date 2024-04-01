@@ -35,7 +35,7 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    */
   router.post(
     "/v1/account",
-    json,
+    json(),
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     svc.registerService.createHandler()
@@ -71,7 +71,7 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    */
   router.post(
     "/v1/account/:personId",
-    json,
+    json(),
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     svc.loginService.createHandler()
@@ -103,7 +103,7 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    */
   router.delete(
     "/v1/account/:personId",
-    json,
+    json(),
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     svc.deleteAccountService.createHandler()
@@ -138,7 +138,7 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    */
   router.patch(
     "/v1/account/username",
-    json,
+    json(),
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     svc.updateUsernameService.createHandler()
@@ -171,7 +171,7 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    */
   router.patch(
     "/v1/account/password",
-    json,
+    json(),
     usernameBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     svc.updatePasswordService.createHandler()

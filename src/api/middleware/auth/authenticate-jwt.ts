@@ -7,19 +7,21 @@ export const createJwtPersonAuthenticationMiddleware =
     const token = request.headers.authorization;
 
     if (!token) {
-      return response.status(401).send("Missing authorization header.");
+      return response
+        .status(401)
+        .json({ error: "Missing authorization header." });
     }
 
     try {
       const payload = jwt.verify(token, secret);
 
       if (typeof payload == "string") {
-        return response.status(401).send("Invalid token.");
+        return response.status(401).json({ error: "Invalid token." });
       }
 
       response.locals.authenticatedPersonId = payload.personId;
       next();
     } catch (error) {
-      return response.status(401).send("Invalid token.");
+      return response.status(401).json({ error: "Invalid token." });
     }
   };

@@ -91,7 +91,7 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    */
   router.post(
     "/v1/task/:houseId",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     createTaskRequestBodyValidationMiddleware({ fieldsRequired: true }),
@@ -179,7 +179,7 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    */
   router.patch(
     "/v1/task/:houseId/:taskId",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     taskIdParamValidationMiddleware,
@@ -214,7 +214,7 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    */
   router.delete(
     "/v1/task/:houseId/:taskId",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     houseIdParamValidationMiddleware,
     taskIdParamValidationMiddleware,

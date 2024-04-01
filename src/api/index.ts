@@ -16,6 +16,7 @@ import { personRouter } from "./domains/person/person-router.js";
 import { pictureRouter } from "./domains/picture/picture-router.js";
 import { scheduleRouter } from "./domains/schedule/schedule-router.js";
 import { taskRouter } from "./domains/task/task-router.js";
+import { loggerMiddleware } from "./middleware/logging/logger-middleware.js";
 
 export const buildAndServeApi = (
   env: Environment,
@@ -30,6 +31,7 @@ export const buildAndServeApi = (
   const app = express();
 
   // Register domain routers.
+  app.use(loggerMiddleware);
   app.use(taskRouter(taskServices, env));
   app.use(accountRouter(accountServices, env));
   app.use(pictureRouter(pictureServices));
@@ -39,7 +41,7 @@ export const buildAndServeApi = (
   app.use(scheduleRouter(scheduleServices, env));
 
   // Start API.
-  app.listen(env.apiPort, () => {
+  return app.listen(env.apiPort, () => {
     console.log(`Server is running on port ${env.apiPort}`);
   });
 };

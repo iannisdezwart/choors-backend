@@ -52,7 +52,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    */
   router.post(
     "/v1/house",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     svc.createHouseService.createHandler()
   );
@@ -81,7 +81,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    */
   router.delete(
     "/v1/house",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     svc.deleteHouseService.createHandler()
   );
@@ -111,7 +111,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    */
   router.patch(
     "/v1/house/name",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     svc.updateHouseNameService.createHandler()
   );
@@ -133,7 +133,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    */
   router.post(
     "/v1/houses/join",
-    json,
+    json(),
     createJwtPersonAuthenticationMiddleware(env.jwtSecret),
     svc.joinHouseService.createHandler()
   );
