@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import { IGroupRepository } from "../../../repositories/IGroupRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
 import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
@@ -83,6 +83,7 @@ export const groupRouter = (groupRepository: IGroupRepository): Router => {
    */
   router.patch(
     "/v1/group",
+    json,
     jwtPersonAuthenticationMiddleware,
     houseIdParamValidationMiddleware,
     updateGroupsService.run.bind(updateGroupsService)
