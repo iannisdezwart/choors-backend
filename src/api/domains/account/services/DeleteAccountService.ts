@@ -48,6 +48,6 @@ export class DeleteAccountService {
       return response.status(500).send("Unknown error occurred.");
     }
 
-    response.status(204).send();
+    return response.status(204).send();
   }
 }

@@ -7,16 +7,14 @@ export enum RegisterPersonStatus {
   UnknownError,
 }
 
-export type RegisterPersonResult = {
-  status: RegisterPersonStatus;
-  person?: PersonRow;
-};
-
 export type PersonRow = {
   id: number;
   username: string;
-  pwd_hash: string;
-  picture: string;
+};
+
+export type RegisterPersonResult = {
+  status: RegisterPersonStatus;
+  person?: PersonRow;
 };
 
 export enum VerifyPersonStatus {
@@ -74,15 +72,24 @@ export class AccountRepository implements IAccountRepository {
     const passwordHash = await hash(password, 10);
 
     const result = await this.dbPool.query(
-      "INSERT INTO person (username, pwd_hash) VALUES ($1, $2)",
+      "INSERT INTO person (username, pwd_hash) VALUES ($1, $2) RETURNING id, username",
       [username, passwordHash]
     );
 
     if (result.rowCount != 1 || result.rows[0] == null) {
+      console.error("Failed to insert new person.", result);
       return { status: RegisterPersonStatus.UnknownError };
     }
 
-    return { status: RegisterPersonStatus.Success, person: result.rows[0] };
+    const person = result.rows[0];
+
+    return {
+      status: RegisterPersonStatus.Success,
+      person: {
+        id: person.id,
+        username: person.username,
+      },
+    };
   }
 
   async verifyPerson(
@@ -90,7 +97,7 @@ export class AccountRepository implements IAccountRepository {
     password: string
   ): Promise<VerifyPersonResult> {
     const result = await this.dbPool.query(
-      "SELECT * FROM person WHERE username = $1 AND active = TRUE",
+      "SELECT id, username, pwd_hash FROM person WHERE username = $1 AND active = TRUE",
       [username]
     );
 
@@ -105,7 +112,13 @@ export class AccountRepository implements IAccountRepository {
       return { status: VerifyPersonStatus.IncorrectPassword };
     }
 
-    return { status: VerifyPersonStatus.Success, person: person };
+    return {
+      status: VerifyPersonStatus.Success,
+      person: {
+        id: person.id,
+        username: person.username,
+      },
+    };
   }
 
   async deleteAccount(

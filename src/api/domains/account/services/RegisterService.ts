@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import {
   IAccountRepository,
-  RegisterPersonStatus
+  RegisterPersonStatus,
 } from "../../../../repositories/AccountRepository";
 
 export class RegisterService {
@@ -62,7 +62,11 @@ export class RegisterService {
       return response.status(500).send("Internal server error.");
     }
 
-    const token = sign({ username }, secret);
+    if (result.person == null) {
+      return response.status(500).send("Internal server error.");
+    }
+
+    const token = sign({ person_id: result.person.id }, secret);
     return response.status(201).send({ token });
   }
 }

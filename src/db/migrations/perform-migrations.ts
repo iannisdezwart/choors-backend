@@ -36,7 +36,7 @@ const migrations: Migration[] = [
         CREATE TABLE IF NOT EXISTS house (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
-          picture TEXT,
+          picture TEXT
         );
       `);
 
@@ -47,7 +47,7 @@ const migrations: Migration[] = [
           username TEXT NOT NULL,
           pwd_hash TEXT NOT NULL,
           active BOOLEAN NOT NULL DEFAULT TRUE,
-          picture TEXT,
+          picture TEXT
         );
       `);
 
@@ -61,9 +61,9 @@ const migrations: Migration[] = [
         );
       `);
 
-      // Group table
+      // Task group table
       await pool.query(`
-        CREATE TABLE IF NOT EXISTS group (
+        CREATE TABLE IF NOT EXISTS task_group (
           id SERIAL PRIMARY KEY,
           name TEXT NOT NULL,
           house_id INT NOT NULL REFERENCES house(id),
@@ -72,13 +72,13 @@ const migrations: Migration[] = [
         );
       `);
 
-      // Person in group table
+      // Person in task group table
       await pool.query(`
-        CREATE TABLE IF NOT EXISTS person_in_group (
+        CREATE TABLE IF NOT EXISTS person_in_task_group (
           person_id INT NOT NULL REFERENCES person(id),
-          group_id INT NOT NULL REFERENCES group(id),
+          task_group_id INT NOT NULL REFERENCES task_group(id),
 
-          PRIMARY KEY(person_id, group_id)
+          PRIMARY KEY(person_id, task_group_id)
         );
       `);
 
@@ -95,7 +95,7 @@ const migrations: Migration[] = [
           schedule_offset INTERVAL NOT NULL,
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
-          responsible_group_id INT NOT NULL REFERENCES group(id),
+          responsible_task_group_id INT NOT NULL REFERENCES task_group(id),
           active BOOLEAN NOT NULL,
 
           UNIQUE(name, house_id)
@@ -109,7 +109,7 @@ const migrations: Migration[] = [
           task_id INT NOT NULL REFERENCES task(id),
           responsible_person_id INT NOT NULL REFERENCES person(id),
           start_date DATE NOT NULL,
-          due_date DATE NOT NULL,
+          due_date DATE NOT NULL
         );
       `);
 
@@ -124,7 +124,7 @@ const migrations: Migration[] = [
           due_date DATE NOT NULL,
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
-          is_penalised BOOLEAN NOT NULL,
+          is_penalised BOOLEAN NOT NULL
         );
       `);
 

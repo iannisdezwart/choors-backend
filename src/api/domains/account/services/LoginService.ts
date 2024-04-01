@@ -47,7 +47,11 @@ export class LoginService {
       return response.status(500).send("Internal server error.");
     }
 
-    const token = sign({ username }, secret);
-    response.status(200).send({ token });
+    if (result.person == null) {
+      return response.status(500).send("Internal server error.");
+    }
+
+    const token = sign({ person_id: result.person.id }, secret);
+    return response.status(200).send({ token });
   }
 }
