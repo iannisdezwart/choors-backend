@@ -1,8 +1,8 @@
 import { Router, json } from "express";
 import { ITaskRepository } from "../../../repositories/ITaskRepository";
 import { jwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt";
-import { houseIdParamValidationMiddleware } from "./middleware/validation/house-id";
-import { taskIdParamValidationMiddleware } from "./middleware/validation/task-id";
+import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id";
+import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id";
 import { createTaskRequestBodyValidationMiddleware } from "./middleware/validation/task-request";
 import { CreateTaskService } from "./services/CreateTaskService";
 import { DeleteTaskService } from "./services/DeleteTaskService";
