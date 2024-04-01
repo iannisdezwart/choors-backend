@@ -1,9 +1,12 @@
 import { Router, json } from "express";
-import { HouseServices } from "../../../Bootstrap.js";
+import { HouseServices, Middleware } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
 
-export const houseRouter = (svc: HouseServices, env: Environment): Router => {
+export const houseRouter = (
+  svc: HouseServices,
+  mdw: Middleware,
+  env: Environment
+): Router => {
   const router = Router();
 
   /**
@@ -18,13 +21,14 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    * @apiSuccess (Success 200) {String} body.id The id of the house.
    * @apiSuccess (Success 200) {String} body.name The name of the house.
    * @apiSuccess (Success 200) {String} body.picture The picture of the house.
+   * @apiSuccess (Success 200) {String} body.inviteCode The invite code of the house.
    *
    * @apiError (Error 500) {Object} body Internal server error.
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.get(
     "/v1/house/mine",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.listMyHousesService.createHandler()
   );
 
@@ -43,6 +47,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    * @apiSuccess (Success 201) {String} body.id The id of the house.
    * @apiSuccess (Success 201) {String} body.name The name of the house.
    * @apiSuccess (Success 201) {String} body.picture The picture of the house.
+   * @apiSuccess (Success 201) {String} body.inviteCode The invite code of the house.
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.
@@ -53,7 +58,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
   router.post(
     "/v1/house",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.createHouseService.createHandler()
   );
 
@@ -82,12 +87,12 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
   router.delete(
     "/v1/house",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.deleteHouseService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/house/name Update house name.
+   * @api {put} /v1/house/name Update house name.
    * @apiName UpdateHouseName
    * @apiGroup House
    * @apiVersion 1.0.0
@@ -96,7 +101,7 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    *
    * @apiBody {Object} body
    * @apiBody {String} body.houseId The id of the house.
-   * @apiBody {String} body.name The new name of the house.
+   * @apiBody {String} body.newName The new name of the house.
    *
    * @apiSuccess (Success 204) body
    *
@@ -109,15 +114,15 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    * @apiError (Error 500) {Object} body Internal server error.
    * @apiError (Error 500) {String} body.error Error message.
    */
-  router.patch(
+  router.put(
     "/v1/house/name",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.updateHouseNameService.createHandler()
   );
 
   /**
-   * @api {post} /v1/houses/join Join a house by invite code.
+   * @api {post} /v1/house/join Join a house by invite code.
    * @apiName JoinHouse
    * @apiGroup House
    * @apiVersion 1.0.0
@@ -125,16 +130,16 @@ export const houseRouter = (svc: HouseServices, env: Environment): Router => {
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiBody {Object} body
-   * @apiBody {String} body.invite_code The invite code of the house.
+   * @apiBody {String} body.inviteCode The invite code of the house.
    *
    * @apiSuccess (Success 204) body
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    */
   router.post(
-    "/v1/houses/join",
+    "/v1/house/join",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.joinHouseService.createHandler()
   );
 

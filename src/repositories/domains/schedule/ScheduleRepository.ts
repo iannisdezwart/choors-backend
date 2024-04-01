@@ -86,13 +86,13 @@ export class ScheduleRepository implements IScheduleRepository {
     return {
       status: GetScheduleForPersonStatus.Success,
       schedule: schedule.rows.map((row) => ({
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
         dueDate: row.due_date,
         points: row.points,
       })),
       history: history.rows.map((row) => ({
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
         points: row.points,
         penalty: row.penalty,
@@ -143,11 +143,12 @@ export class ScheduleRepository implements IScheduleRepository {
     return {
       status: GetScheduledTaskDetailsStatus.Success,
       task: {
-        id: scheduledTask.rows[0].id,
+        id: scheduledTask.rows[0].id.toString(),
         name: scheduledTask.rows[0].name,
         dueDate: scheduledTask.rows[0].due_date,
         points: scheduledTask.rows[0].points,
-        responsiblePerson: scheduledTask.rows[0].responsible_person_id,
+        responsiblePerson:
+          scheduledTask.rows[0].responsible_person_id.toString(),
         description: scheduledTask.rows[0].description,
       },
     };
@@ -195,11 +196,12 @@ export class ScheduleRepository implements IScheduleRepository {
     return {
       status: GetCompletedTaskDetailsStatus.Success,
       task: {
-        id: completedTask.rows[0].id,
+        id: completedTask.rows[0].id.toString(),
         name: completedTask.rows[0].name,
         dueDate: completedTask.rows[0].due_date,
         points: completedTask.rows[0].points,
-        responsiblePerson: completedTask.rows[0].responsible_person_id,
+        responsiblePerson:
+          completedTask.rows[0].responsible_person_id.toString(),
         description: completedTask.rows[0].description,
         penalty: completedTask.rows[0].penalty,
         isPenalised: completedTask.rows[0].is_penalised,
@@ -439,7 +441,7 @@ export class ScheduleRepository implements IScheduleRepository {
 
     const completedTask = await this.dbPool.query(
       `
-        SELECT COUNT(*)
+        SELECT task.id
         FROM completed_task, task
         WHERE completed_task.id = $2
         AND completed_task.task_id = task.id

@@ -3,7 +3,11 @@ import { spawn } from "child_process";
 import { Bootstrap } from "../../Bootstrap.js";
 import { CustomEnvironmentProvider } from "../../env/CustomEnvironmentProvider.js";
 import { EndToEndFlow } from "./EndToEndFlow.js";
+import { createTasksFlow } from "./flows/create-tasks-flow.js";
+import { multiplePersonsFlow } from "./flows/multiple-persons-flow.js";
+import { pictureFlow } from "./flows/picture-flow.js";
 import { registerFlow } from "./flows/register-flow.js";
+import { updateAccountDetailsFlow } from "./flows/update-account-details.js";
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => {
@@ -70,7 +74,13 @@ const stopDb = (): Promise<void> =>
     });
   });
 
-const flows: EndToEndFlow[] = [registerFlow];
+const flows: EndToEndFlow[] = [
+  registerFlow,
+  updateAccountDetailsFlow,
+  createTasksFlow,
+  pictureFlow,
+  multiplePersonsFlow,
+];
 
 const runEndToEndTests = async () => {
   console.log("Stopping db if running.");
@@ -90,7 +100,7 @@ const runEndToEndTests = async () => {
     dbPassword: "e2e_pwd",
     jwtSecret: "e2e_secret",
     pictureMaxSize: bytes("256kB"),
-    pictureStoragePath: "/tmp",
+    pictureStoragePath: "/tmp/pictures",
   });
 
   await sleep(1000);
@@ -107,8 +117,8 @@ const runEndToEndTests = async () => {
     try {
       await flow.fn();
       console.log(`Flow ${i} (${flow.name}) passed.`);
-    } catch {
-      console.error(`Flow ${i} (${flow.name}) failed!!!`);
+    } catch (exc) {
+      console.error(`Flow ${i} (${flow.name}) failed!!!`, exc);
     }
   }
 

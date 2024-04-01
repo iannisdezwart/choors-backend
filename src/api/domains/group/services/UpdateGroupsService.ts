@@ -13,7 +13,7 @@ export class UpdateGroupsService extends AService {
   async run(request: Request, response: Response) {
     const houseId = request.params.houseId;
     const personId = response.locals.authenticatedPersonId;
-    const { addedGroups, removedGroupIds, updatedGroups } = request.body;
+    const { addedGroups, deletedGroupIds, renamedGroups } = request.body;
 
     if (addedGroups && !Array.isArray(addedGroups)) {
       return response.status(400).json({
@@ -31,31 +31,31 @@ export class UpdateGroupsService extends AService {
       });
     }
 
-    if (removedGroupIds && !Array.isArray(removedGroupIds)) {
+    if (deletedGroupIds && !Array.isArray(deletedGroupIds)) {
       return response.status(400).json({
-        error: "Unexpected type of 'removedGroupIds' field. Expected array.",
+        error: "Unexpected type of 'deletedGroupIds' field. Expected array.",
       });
     }
 
     if (
-      removedGroupIds &&
-      removedGroupIds.some((id: any) => typeof id !== "string")
+      deletedGroupIds &&
+      deletedGroupIds.some((id: any) => typeof id !== "string")
     ) {
       return response.status(400).json({
         error:
-          "Unexpected type of 'removedGroupIds' field. Expected array of strings.",
+          "Unexpected type of 'deletedGroupIds' field. Expected array of strings.",
       });
     }
 
-    if (updatedGroups && !Array.isArray(updatedGroups)) {
+    if (renamedGroups && !Array.isArray(renamedGroups)) {
       return response.status(400).json({
-        error: "Unexpected type of 'updatedGroups' field. Expected array.",
+        error: "Unexpected type of 'renamedGroups' field. Expected array.",
       });
     }
 
     if (
-      updatedGroups &&
-      updatedGroups.some(
+      renamedGroups &&
+      renamedGroups.some(
         (group: any) =>
           typeof group !== "object" ||
           !group.id ||
@@ -66,7 +66,7 @@ export class UpdateGroupsService extends AService {
     ) {
       return response.status(400).json({
         error:
-          "Unexpected type of 'updatedGroups' field. Expected array of { id: string, name: string }.",
+          "Unexpected type of 'renamedGroups' field. Expected array of { id: string, name: string }.",
       });
     }
 
@@ -74,8 +74,8 @@ export class UpdateGroupsService extends AService {
       personId,
       houseId,
       addedGroups,
-      removedGroupIds,
-      updatedGroups
+      deletedGroupIds,
+      renamedGroups
     );
 
     switch (result.status) {

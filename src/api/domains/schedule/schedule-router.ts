@@ -1,11 +1,12 @@
 import { Router, json } from "express";
-import { ScheduleServices } from "../../../Bootstrap.js";
+import { Middleware, ScheduleServices } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
-import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id.js";
 
-export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router => {
+export const scheduleRouter = (
+  svc: ScheduleServices,
+  mdw: Middleware,
+  env: Environment
+): Router => {
   const router = Router();
 
   /**
@@ -44,9 +45,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.get(
     "/v1/schedule/:houseId/for-person/:personId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getScheduleForPersonService.createHandler()
   );
 
@@ -80,9 +81,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.get(
     "/v1/schedule/:houseId/scheduled-task/:taskId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getScheduledTaskDetailsService.createHandler()
   );
 
@@ -118,9 +119,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
    */
   router.get(
     "/v1/schedule/:houseId/completed-task/:taskId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getCompletedTaskDetailsService.createHandler()
   );
 
@@ -149,9 +150,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/mark-done",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.markScheduledTaskDoneService.createHandler()
   );
 
@@ -180,9 +181,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/mark-undone",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.markCompletedTaskUndoneService.createHandler()
   );
 
@@ -214,9 +215,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
   router.patch(
     "/v1/schedule/:houseId/scheduled-task/:taskId/delegate",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.delegateScheduledTaskService.createHandler()
   );
 
@@ -248,9 +249,9 @@ export const scheduleRouter = (svc: ScheduleServices, env: Environment): Router 
   router.patch(
     "/v1/schedule/:houseId/completed-task/:taskId/complain",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.complainAboutCompletedTaskService.createHandler()
   );
 

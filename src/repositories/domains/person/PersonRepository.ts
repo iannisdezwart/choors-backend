@@ -46,23 +46,21 @@ export class PersonRepository implements IPersonRepository {
 
     const persons = await this.dbPool.query(
       `
-      SELECT person.id, person.name, person.picture,
-        SUM(completed_task.points) AS points,
-        SUM(completed_task.penalties) AS penalties
-      FROM person, person_in_house, completed_task
-      WHERE person.id = person_in_house.person_id
-      AND person_in_house.house_id = $1
-      AND completed_task.responsible_person_id = person.id
-      GROUP BY completed_task.responsible_person_id
-    `,
+        SELECT person.id, person.username, person.picture,
+          (SELECT SUM(points) FROM completed_task WHERE responsible_person_id = person.id AND NOT is_penalised) AS points,
+          (SELECT SUM(penalty) FROM completed_task WHERE responsible_person_id = person.id AND is_penalised) AS penalties
+        FROM person, person_in_house
+        WHERE person.id = person_in_house.person_id
+        AND person_in_house.house_id = $1
+      `,
       [houseId]
     );
 
     return {
       status: ListPersonsStatus.Success,
       persons: persons.rows.map((row) => ({
-        id: row.id,
-        name: row.name,
+        id: row.id.toString(),
+        name: row.username,
         picture: row.picture,
         points: row.points,
         penalties: row.penalties,
@@ -121,16 +119,14 @@ export class PersonRepository implements IPersonRepository {
 
     const personDetails = await this.dbPool.query(
       `
-      SELECT person.id, person.name, person.picture,
-        SUM(completed_task.points) AS points,
-        SUM(completed_task.penalties) AS penalties
-      FROM person, person_in_house, completed_task
-      WHERE person.id = person_in_house.person_id
-      AND person_in_house.house_id = $1
-      AND completed_task.responsible_person_id = person.id
-      AND person.id = $2
-      GROUP BY completed_task.responsible_person_id
-    `,
+        SELECT person.id, person.username, person.picture,
+          (SELECT SUM(points) FROM completed_task WHERE responsible_person_id = person.id AND NOT is_penalised) AS points,
+          (SELECT SUM(penalty) FROM completed_task WHERE responsible_person_id = person.id AND is_penalised) AS penalties
+        FROM person, person_in_house
+        WHERE person.id = person_in_house.person_id
+        AND person_in_house.house_id = $1
+        AND person.id = $2
+      `,
       [houseId, personId]
     );
 
@@ -138,53 +134,55 @@ export class PersonRepository implements IPersonRepository {
 
     const groups = await this.dbPool.query(
       `
-      SELECT task_group.id, task_group.name
-      FROM task_group, person_in_task_group
-      WHERE task_group.id = person_in_task_group.group_id
-      AND person_in_task_group.person_id = $1
-      AND task_group.house_id = $2
+        SELECT task_group.id, task_group.name
+        FROM task_group, person_in_task_group
+        WHERE task_group.id = person_in_task_group.task_group_id
+        AND person_in_task_group.person_id = $1
+        AND task_group.house_id = $2
     `,
       [personId, houseId]
     );
 
     const schedule = await this.dbPool.query(
       `
-      SELECT schedule_entry.id, schedule_entry.name, schedule_entry.due_date, schedule_entry.points
-      FROM schedule_entry
-      WHERE schedule_entry.person_id = $1
-      AND schedule_entry.house_id = $2
-    `,
+        SELECT scheduled_task.id, task.name, scheduled_task.due_date, task.points
+        FROM scheduled_task, task
+        WHERE scheduled_task.responsible_person_id = $1
+        AND task.house_id = $2
+        AND task.id = scheduled_task.task_id
+      `,
       [personId, houseId]
     );
 
     const historicalTasks = await this.dbPool.query(
       `
-      SELECT completed_task.id, completed_task.name, completed_task.points,
-        completed_task.penalty, completed_task.due_date, completed_task.is_penalised
-      FROM completed_task
-      WHERE completed_task.responsible_person_id = $1
-      AND completed_task.house_id = $2
-    `,
+        SELECT completed_task.id, task.name, completed_task.points,
+          completed_task.penalty, completed_task.due_date, completed_task.is_penalised
+        FROM completed_task, task
+        WHERE completed_task.responsible_person_id = $1
+        AND task.house_id = $2
+        AND task.id = completed_task.task_id
+      `,
       [personId, houseId]
     );
 
     return {
       status: GetPersonDetailsStatus.Success,
       person: {
-        id: personEntry.id,
-        name: personEntry.name,
+        id: personEntry.id.toString(),
+        name: personEntry.username,
         picture: personEntry.picture,
         points: personEntry.points,
         penalties: personEntry.penalties,
         groups: groups.rows.map((row) => row.name),
         schedule: schedule.rows.map((row) => ({
-          id: row.id,
+          id: row.id.toString(),
           name: row.name,
           dueDate: row.due_date,
           points: row.points,
         })),
         historicalTasks: historicalTasks.rows.map((row) => ({
-          id: row.id,
+          id: row.id.toString(),
           name: row.name,
           points: row.points,
           penalty: row.penalty,
@@ -254,7 +252,7 @@ export class PersonRepository implements IPersonRepository {
 
     for (const groupId of groupIds) {
       await this.dbPool.query(
-        "INSERT INTO person_in_task_group (person_id, group_id) VALUES ($1, $2)",
+        "INSERT INTO person_in_task_group (person_id, task_group_id) VALUES ($1, $2)",
         [personId, groupId]
       );
     }

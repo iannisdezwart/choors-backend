@@ -97,7 +97,7 @@ const migrations: Migration[] = [
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
           responsible_task_group_id INT NOT NULL REFERENCES task_group(id),
-          active BOOLEAN NOT NULL,
+          active BOOLEAN NOT NULL DEFAULT TRUE,
 
           UNIQUE(name, house_id)
         );

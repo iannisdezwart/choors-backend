@@ -11,7 +11,7 @@ export class UpdatePasswordService extends AService {
   }
 
   async run(request: Request, response: Response) {
-    const { username, password, newPassword } = request.body.password;
+    const { username, password, newPassword } = request.body;
 
     if (!newPassword) {
       return response

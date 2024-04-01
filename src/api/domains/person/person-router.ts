@@ -1,11 +1,12 @@
 import { Router, json } from "express";
-import { PersonServices } from "../../../Bootstrap.js";
+import { Middleware, PersonServices } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
-import { personIdParamValidationMiddleware } from "../../middleware/validation/person-id.js";
 
-export const personRouter = (svc: PersonServices, env: Environment): Router => {
+export const personRouter = (
+  svc: PersonServices,
+  mdw: Middleware,
+  env: Environment
+): Router => {
   const router = Router();
 
   /**
@@ -39,8 +40,8 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
    */
   router.get(
     "/v1/person/:houseId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
     svc.listPersonsService.createHandler()
   );
 
@@ -55,25 +56,26 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
    * @apiParam {String} houseId The id of the house.
    * @apiParam {String} personId The id of the person.
    *
-   * @apiSuccess (Success 200) {Object} body Detailed person info.
-   * @apiSuccess (Success 200) {String} body.id The id of the person.
-   * @apiSuccess (Success 200) {String} body.name The name of the person.
-   * @apiSuccess (Success 200) {String} body.picture The picture of the person.
-   * @apiSuccess (Success 200) {Number} body.points The points of the person.
-   * @apiSuccess (Success 200) {Number} body.penalties The penalties of the person.
-   * @apiSuccess (Success 200) {string[]} body.groups The groups the person is in.
-   * @apiSuccess (Success 200) {Object[]} body.schedule The person's schedule.
-   * @apiSuccess (Success 200) {String} body.schedule.id The id of the task.
-   * @apiSuccess (Success 200) {String} body.schedule.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.schedule.dueDate The due date of the task.
-   * @apiSuccess (Success 200) {Number} body.schedule.points The points for the task.
-   * @apiSuccess (Success 200) {Object[]} body.historicalTasks The person's historical tasks.
-   * @apiSuccess (Success 200) {String} body.historicalTasks.id The id of the task.
-   * @apiSuccess (Success 200) {String} body.historicalTasks.name The name of the task.
-   * @apiSuccess (Success 200) {Number} body.historicalTasks.points The points for the task.
-   * @apiSuccess (Success 200) {Number} body.historicalTasks.penalty The penalty for the task.
-   * @apiSuccess (Success 200) {String} body.historicalTasks.dueDate The due date of the task.
-   * @apiSuccess (Success 200) {Boolean} body.historicalTasks.isPenalised Whether the task is penalised.
+   * @apiSuccess (Success 200) {Object} body
+   * @apiSuccess (Success 200) {String} body.person Detailed person info.
+   * @apiSuccess (Success 200) {String} body.person.id The id of the person.
+   * @apiSuccess (Success 200) {String} body.person.name The name of the person.
+   * @apiSuccess (Success 200) {String} body.person.picture The picture of the person.
+   * @apiSuccess (Success 200) {Number} body.person.points The points of the person.
+   * @apiSuccess (Success 200) {Number} body.person.penalties The penalties of the person.
+   * @apiSuccess (Success 200) {string[]} body.person.groups The groups the person is in.
+   * @apiSuccess (Success 200) {Object[]} body.person.schedule The person's schedule.
+   * @apiSuccess (Success 200) {String} body.person.schedule.id The id of the task.
+   * @apiSuccess (Success 200) {String} body.person.schedule.name The name of the task.
+   * @apiSuccess (Success 200) {String} body.person.schedule.dueDate The due date of the task.
+   * @apiSuccess (Success 200) {Number} body.person.schedule.points The points for the task.
+   * @apiSuccess (Success 200) {Object[]} body.person.historicalTasks The person's historical tasks.
+   * @apiSuccess (Success 200) {String} body.person.historicalTasks.id The id of the task.
+   * @apiSuccess (Success 200) {String} body.person.historicalTasks.name The name of the task.
+   * @apiSuccess (Success 200) {Number} body.person.historicalTasks.points The points for the task.
+   * @apiSuccess (Success 200) {Number} body.person.historicalTasks.penalty The penalty for the task.
+   * @apiSuccess (Success 200) {String} body.person.historicalTasks.dueDate The due date of the task.
+   * @apiSuccess (Success 200) {Boolean} body.person.historicalTasks.isPenalised Whether the task is penalised.
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.
@@ -89,9 +91,9 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
    */
   router.get(
     "/v1/person/:houseId/:personId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getPersonDetailsService.createHandler()
   );
 
@@ -125,9 +127,9 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
   router.patch(
     "/v1/person/:houseId/:personId/groups",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.updatePersonGroupsService.createHandler()
   );
 
@@ -158,9 +160,9 @@ export const personRouter = (svc: PersonServices, env: Environment): Router => {
    */
   router.delete(
     "/v1/person/:houseId/:personId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    personIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.removePersonFromHouseService.createHandler()
   );
 

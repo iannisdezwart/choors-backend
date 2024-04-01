@@ -40,11 +40,15 @@ export class CreateTaskService extends AService {
 
     switch (result.status) {
       case CreateTaskStatus.Success:
-        return response.status(201).end();
+        return response.status(204).end();
       case CreateTaskStatus.PersonNotInHouse:
         return response.status(403).json({ error: "Person not in house." });
       case CreateTaskStatus.HouseNotFound:
         return response.status(404).json({ error: "House not found." });
+      case CreateTaskStatus.ResponsibleGroupNotFound:
+        return response
+          .status(404)
+          .json({ error: "Responsible group not found." });
       default:
         console.error(
           "CreateTaskService.run() - Unknown status:",

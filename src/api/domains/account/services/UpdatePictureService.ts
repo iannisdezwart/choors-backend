@@ -1,3 +1,4 @@
+import bytes from "bytes";
 import { Request, Response } from "express";
 import { Environment } from "../../../../env/Environment.js";
 import {
@@ -33,23 +34,29 @@ export class UpdatePictureService extends AService {
     }
 
     if (bodySize != null && bodySize > this.env.pictureMaxSize) {
-      return response
-        .status(400)
-        .json({ error: "Picture size must not exceed 256 KB." });
+      return response.status(400).json({
+        error: `Picture size must not exceed ${bytes(
+          this.env.pictureMaxSize
+        )}.`,
+      });
     }
 
+    const pictureHandle = `person-${authPersonId}`;
+
     const storePictureResult = await this.pictureRepository.storePicture(
-      authPersonId,
-      request.body
+      pictureHandle,
+      request
     );
 
     switch (storePictureResult.status) {
       case StorePictureStatus.PathError:
         return response.status(401).json({ error: "Forbidden." });
       case StorePictureStatus.PictureTooLargeError:
-        return response
-          .status(400)
-          .json({ error: "Picture size must not exceed 256 KB." });
+        return response.status(400).json({
+          error: `Picture size must not exceed ${bytes(
+            this.env.pictureMaxSize
+          )}.`,
+        });
       case StorePictureStatus.Success:
         break;
       default:
@@ -62,7 +69,7 @@ export class UpdatePictureService extends AService {
 
     const result = await this.accountRepository.updatePicture(
       authPersonId,
-      `person-${authPersonId}`
+      pictureHandle
     );
 
     switch (result.status) {

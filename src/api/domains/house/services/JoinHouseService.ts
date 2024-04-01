@@ -12,21 +12,21 @@ export class JoinHouseService extends AService {
 
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;
-    const houseId = request.body.houseId;
+    const inviteCode = request.body.inviteCode;
 
-    if (!houseId) {
+    if (!inviteCode) {
       return response
         .status(400)
-        .json({ error: "Missing required field 'houseId'." });
+        .json({ error: "Missing required field 'inviteCode'." });
     }
 
-    if (typeof houseId !== "string") {
+    if (typeof inviteCode !== "string") {
       return response.status(400).json({
-        error: "Unexpected type of 'houseId' field. Expected string.",
+        error: "Unexpected type of 'inviteCode' field. Expected string.",
       });
     }
 
-    const result = await this.houseRepository.joinHouse(personId, houseId);
+    const result = await this.houseRepository.joinHouse(personId, inviteCode);
 
     switch (result.status) {
       case JoinHouseStatus.Success:

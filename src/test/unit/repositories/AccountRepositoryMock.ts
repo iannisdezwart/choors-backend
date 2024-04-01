@@ -8,4 +8,5 @@ export const makeAccountRepositoryMock =
     updatePassword: jest.fn(),
     updatePicture: jest.fn(),
     verifyPerson: jest.fn(),
+    checkPersonExists: jest.fn(),
   });

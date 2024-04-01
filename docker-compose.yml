@@ -6,7 +6,7 @@ services:
     restart: always
     build: .
     ports:
-      - "${PORT}:${PORT}"
+      - "${API_PORT}:${API_PORT}"
     depends_on:
       - db
 

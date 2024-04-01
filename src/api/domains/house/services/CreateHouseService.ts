@@ -40,6 +40,8 @@ export class CreateHouseService extends AService {
         return response.status(201).json({ house: result.house });
       case CreateHouseStatus.PersonNotFound:
         return response.status(500).json({ error: "Unknown error occurred." });
+      case CreateHouseStatus.UnknownError:
+        return response.status(500).json({ error: "Unknown error occurred." });
       default:
         console.error(
           "CreateHouseService.run() - Unknown status:",

@@ -6,6 +6,8 @@ export interface IAccountRepository {
 
   verifyPerson(username: string, password: string): Promise<VerifyPersonResult>;
 
+  checkPersonExists(personId: string): Promise<boolean>;
+
   deleteAccount(
     username: string,
     password: string
@@ -36,7 +38,7 @@ export enum RegisterPersonStatus {
 }
 
 export type PersonRow = {
-  id: number;
+  id: string;
   picture: string;
   username: string;
 };

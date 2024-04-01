@@ -53,7 +53,7 @@ export class GroupRepository implements IGroupRepository {
     return {
       status: ListGroupsStatus.Success,
       groups: groups.rows.map((row) => ({
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
       })),
     };
@@ -63,7 +63,7 @@ export class GroupRepository implements IGroupRepository {
     personId: string,
     houseId: string,
     addedGroups?: string[],
-    removedGroupIds?: string[],
+    deletedGroupIds?: string[],
     renamedGroups?: Group[]
   ): Promise<UpdateGroupsResult> {
     const person = await this.dbPool.query(
@@ -112,11 +112,11 @@ export class GroupRepository implements IGroupRepository {
       }
     }
 
-    if (removedGroupIds) {
-      for (const removedGroupId of removedGroupIds) {
+    if (deletedGroupIds) {
+      for (const deletedGroupId of deletedGroupIds) {
         const tasksWithGroup = await this.dbPool.query(
-          "SELECT COUNT(*) FROM task WHERE responsible_task_group_id = $1",
-          [removedGroupId]
+          "SELECT id FROM task WHERE responsible_task_group_id = $1",
+          [deletedGroupId]
         );
 
         if (tasksWithGroup.rowCount && tasksWithGroup.rowCount > 0) {
@@ -125,8 +125,8 @@ export class GroupRepository implements IGroupRepository {
         }
 
         const personsInTaskGroup = await this.dbPool.query(
-          "SELECT COUNT(*) FROM person_in_task_group WHERE task_group_id = $1",
-          [removedGroupId]
+          "SELECT person_id FROM person_in_task_group WHERE task_group_id = $1",
+          [deletedGroupId]
         );
 
         if (personsInTaskGroup.rowCount && personsInTaskGroup.rowCount > 0) {
@@ -135,7 +135,7 @@ export class GroupRepository implements IGroupRepository {
         }
 
         await this.dbPool.query("DELETE FROM task_group WHERE id = $1", [
-          removedGroupId,
+          deletedGroupId,
         ]);
       }
     }

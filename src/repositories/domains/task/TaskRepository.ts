@@ -61,7 +61,7 @@ export class TaskRepository implements ITaskRepository {
     return {
       status: GetTasksForHouseStatus.Success,
       tasks: tasks.rows.map((row) => ({
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
         freqBase: row.freq_base,
         freqOffset: row.freq_offset,
@@ -172,7 +172,7 @@ export class TaskRepository implements ITaskRepository {
     return {
       status: GetDetailedTaskStatus.Success,
       task: {
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
         description: row.description,
         freqBase: row.freq_base,

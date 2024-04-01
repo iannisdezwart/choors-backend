@@ -1,5 +1,5 @@
 import { fileTypeFromFile } from "file-type";
-import { createReadStream, createWriteStream, existsSync } from "fs";
+import { createReadStream, createWriteStream, existsSync, mkdirSync } from "fs";
 import path from "path";
 import { Environment } from "../../../env/Environment.js";
 import {
@@ -20,6 +20,14 @@ export class PictureRepository implements IPictureRepository {
     return new Promise((resolve) => {
       const basePath = path.resolve(this.env.pictureStoragePath);
       const filePath = path.resolve(basePath, handle);
+
+      if (!existsSync(basePath)) {
+        console.log(
+          "PictureRepository.storePicture() - Creating base directory:",
+          basePath
+        );
+        mkdirSync(basePath, { recursive: true });
+      }
 
       if (!filePath.startsWith(basePath)) {
         console.error(
@@ -60,7 +68,7 @@ export class PictureRepository implements IPictureRepository {
   }
 
   async retrievePicture(handle: string): Promise<RetrievePictureResult> {
-    const filePath = path.resolve("storage/pictures", handle);
+    const filePath = path.resolve(this.env.pictureStoragePath, handle);
 
     if (!existsSync(filePath)) {
       return { status: RetrievePictureStatus.PictureNotFoundError };

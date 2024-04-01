@@ -43,7 +43,7 @@ export class AccountRepository implements IAccountRepository {
     return {
       status: RegisterPersonStatus.Success,
       person: {
-        id: person.id,
+        id: person.id.toString(),
         picture: person.picture,
         username: person.username,
       },
@@ -71,11 +71,20 @@ export class AccountRepository implements IAccountRepository {
     return {
       status: VerifyPersonStatus.Success,
       person: {
-        id: person.id,
+        id: person.id.toString(),
         picture: person.picture,
         username: person.username,
       },
     };
+  }
+
+  async checkPersonExists(personId: string): Promise<boolean> {
+    const result = await this.dbPool.query(
+      "SELECT * FROM person WHERE id = $1 AND active = TRUE",
+      [personId]
+    );
+
+    return result.rowCount == 1;
   }
 
   async deleteAccount(username: string, password: string) {
@@ -162,7 +171,7 @@ export class AccountRepository implements IAccountRepository {
       [newUsername]
     );
 
-    if (!newUsernameTaken.rowCount || newUsernameTaken.rowCount > 0) {
+    if (newUsernameTaken.rowCount && newUsernameTaken.rowCount > 0) {
       return { status: UpdateUsernameStatus.NewUsernameTaken };
     }
 

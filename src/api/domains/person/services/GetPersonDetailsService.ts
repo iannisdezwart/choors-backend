@@ -17,13 +17,13 @@ export class GetPersonDetailsService extends AService {
 
     const result = await this.personRepository.getPersonDetails(
       reqPersonId,
-      personId,
-      houseId
+      houseId,
+      personId
     );
 
     switch (result.status) {
       case GetPersonDetailsStatus.Success:
-        return response.status(200).json(result.person);
+        return response.status(200).json({ person: result.person });
       case GetPersonDetailsStatus.PersonNotInHouse:
         return response.status(403).json({ error: "Person not in house." });
       case GetPersonDetailsStatus.ReqPersonNotInHouse:

@@ -24,7 +24,7 @@ export class GetTaskListService extends AService {
 
     switch (tasks.status) {
       case GetTasksForHouseStatus.Success:
-        return response.status(200).json(tasks.tasks);
+        return response.status(200).json({ tasks: tasks.tasks });
       case GetTasksForHouseStatus.HouseNotFound:
         return response.status(404).json({ error: "House not found." });
       case GetTasksForHouseStatus.PersonNotFound:

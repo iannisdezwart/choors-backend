@@ -30,6 +30,12 @@ import { GetDetailedTaskService } from "./api/domains/task/services/GetDetailedT
 import { GetTaskListService } from "./api/domains/task/services/GetTaskListService.js";
 import { UpdateTaskService } from "./api/domains/task/services/UpdateTaskService.js";
 import { buildAndServeApi } from "./api/index.js";
+import { JwtPersonAuthenticationMiddleware } from "./api/middleware/auth/JwtPersonAuthenticationMiddleware.js";
+import { HouseIdPathParamValidationMiddleware } from "./api/middleware/validation/HouseIdPathParamValidationMiddleware.js";
+import { PasswordBodyFieldValidationMiddleware } from "./api/middleware/validation/PasswordBodyFieldValidationMiddleware.js";
+import { PersonIdPathParamValidationMiddleware } from "./api/middleware/validation/PersonIdPathParamValidationMiddleware.js";
+import { TaskIdPathParamValidationMiddleware } from "./api/middleware/validation/TaskIdPathParamValidationMiddleware.js";
+import { UsernameBodyFieldValidationMiddleware } from "./api/middleware/validation/UsernameBodyFieldValidationMiddleware.js";
 import { connectToDb } from "./db/index.js";
 import { Environment } from "./env/Environment.js";
 import { IEnvironmentProvider } from "./env/IEnvironmentProvider.js";
@@ -197,7 +203,33 @@ export class TaskServices {
   }
 }
 
+export class Middleware {
+  readonly jwtPersonAuthenticationMiddleware: JwtPersonAuthenticationMiddleware;
+  readonly houseIdPathParamValidationMiddleware: HouseIdPathParamValidationMiddleware;
+  readonly passwordBodyFieldValidationMiddleware: PasswordBodyFieldValidationMiddleware;
+  readonly personIdPathParamValidationMiddleware: PersonIdPathParamValidationMiddleware;
+  readonly taskIdPathParamValidationMiddleware: TaskIdPathParamValidationMiddleware;
+  readonly usernameBodyFieldValidationMiddleware: UsernameBodyFieldValidationMiddleware;
+
+  constructor(accountRepository: IAccountRepository, env: Environment) {
+    this.jwtPersonAuthenticationMiddleware =
+      new JwtPersonAuthenticationMiddleware(accountRepository, env);
+    this.houseIdPathParamValidationMiddleware =
+      new HouseIdPathParamValidationMiddleware();
+    this.passwordBodyFieldValidationMiddleware =
+      new PasswordBodyFieldValidationMiddleware();
+    this.personIdPathParamValidationMiddleware =
+      new PersonIdPathParamValidationMiddleware();
+    this.taskIdPathParamValidationMiddleware =
+      new TaskIdPathParamValidationMiddleware();
+    this.usernameBodyFieldValidationMiddleware =
+      new UsernameBodyFieldValidationMiddleware();
+  }
+}
+
 export class Bootstrap {
+  private env?: Environment;
+  private dbPool?: pg.Pool;
   private repositories?: Repositories;
   private accountServices?: AccountServices;
   private groupServices?: GroupServices;
@@ -206,8 +238,7 @@ export class Bootstrap {
   private pictureServices?: PictureServices;
   private scheduleServices?: ScheduleServices;
   private taskServices?: TaskServices;
-  private env?: Environment;
-  private dbPool?: pg.Pool;
+  private middleware?: Middleware;
   server?: ReturnType<typeof buildAndServeApi>;
 
   public async init(envProvider: IEnvironmentProvider) {
@@ -232,11 +263,16 @@ export class Bootstrap {
       this.repositories.scheduleRepository!
     );
     this.taskServices = new TaskServices(this.repositories.taskRepository!);
+    this.middleware = new Middleware(
+      this.repositories.accountRepository!,
+      this.env
+    );
   }
 
   public async run() {
     this.server = buildAndServeApi(
       this.env!,
+      this.middleware!,
       this.accountServices!,
       this.groupServices!,
       this.houseServices!,

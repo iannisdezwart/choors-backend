@@ -12,7 +12,7 @@ test("happy path", async () => {
   mockedAccountRepository.verifyPerson.mockResolvedValue({
     status: VerifyPersonStatus.Success,
     person: {
-      id: 1,
+      id: "1",
       username: "name",
       pwd_hash: "hash(pwd)",
       picture: "pic",

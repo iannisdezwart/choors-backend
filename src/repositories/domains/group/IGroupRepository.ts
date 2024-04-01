@@ -5,7 +5,7 @@ export interface IGroupRepository {
     personId: string,
     houseId: string,
     addedGroups?: string[],
-    removedGroupIds?: string[],
+    deletedGroupIds?: string[],
     renamedGroups?: Group[]
   ): Promise<UpdateGroupsResult>;
 }

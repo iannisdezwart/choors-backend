@@ -1,12 +1,13 @@
 import { Router, json } from "express";
-import { TaskServices } from "../../../Bootstrap.js";
+import { Middleware, TaskServices } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
-import { taskIdParamValidationMiddleware } from "../../middleware/validation/task-id.js";
 import { createTaskRequestBodyValidationMiddleware } from "./middleware/validation/task-request.js";
 
-export const taskRouter = (svc: TaskServices, env: Environment): Router => {
+export const taskRouter = (
+  svc: TaskServices,
+  mdw: Middleware,
+  env: Environment
+): Router => {
   const router = Router();
 
   /**
@@ -19,17 +20,18 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    *
    * @apiParam {String} houseId The id of the house.
    *
-   * @apiSuccess (Success 200) {Object[]} body The list of tasks.
-   * @apiSuccess (Success 200) {Number} body.id The id of the task.
-   * @apiSuccess (Success 200) {String} body.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.description The description of the task.
-   * @apiSuccess (Success 200) {Date} body.freqBase The frequency base of the task.
-   * @apiSuccess (Success 200) {Number} body.freqOffset The frequency offset of the task.
-   * @apiSuccess (Success 200) {Number} body.timeLimit The time limit of the task.
-   * @apiSuccess (Success 200) {Number} body.scheduleOffset The schedule offset of the task.
-   * @apiSuccess (Success 200) {Number} body.points The points for the task.
-   * @apiSuccess (Success 200) {Number} body.penalty The penalty for the task.
-   * @apiSuccess (Success 200) {String} body.responsibleTaskGroup The responsible task group for the task.
+   * @apiSuccess (Success 200) {Object} body
+   * @apiSuccess (Success 200) {Object[]} body.tasks The list of tasks.
+   * @apiSuccess (Success 200) {Number} body.tasks.id The id of the task.
+   * @apiSuccess (Success 200) {String} body.tasks.name The name of the task.
+   * @apiSuccess (Success 200) {String} body.tasks.description The description of the task.
+   * @apiSuccess (Success 200) {Date} body.tasks.freqBase The frequency base of the task.
+   * @apiSuccess (Success 200) {Number} body.tasks.freqOffset The frequency offset of the task.
+   * @apiSuccess (Success 200) {Number} body.tasks.timeLimit The time limit of the task.
+   * @apiSuccess (Success 200) {Number} body.tasks.scheduleOffset The schedule offset of the task.
+   * @apiSuccess (Success 200) {Number} body.tasks.points The points for the task.
+   * @apiSuccess (Success 200) {Number} body.tasks.penalty The penalty for the task.
+   * @apiSuccess (Success 200) {String} body.tasks.responsibleTaskGroup The responsible task group for the task.
    *
    * @apiError (Error 404) {Object} body House not found.
    * @apiError (Error 404) {String} body.error Error message.
@@ -39,8 +41,8 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    */
   router.get(
     "/v1/task/:houseId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
     svc.getTaskListService.createHandler()
   );
 
@@ -65,17 +67,7 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    * @apiBody {Number} body.penalty The penalty for the task.
    * @apiBody {String} body.responsibleTaskGroup The responsible task group for the task.
    *
-   * @apiSuccess (Success 201) {Object} body
-   * @apiSuccess (Success 201) {Number} body.id The id of the task.
-   * @apiSuccess (Success 201) {String} body.name The name of the task.
-   * @apiSuccess (Success 201) {String} body.description The description of the task.
-   * @apiSuccess (Success 201) {Date} body.freqBase The frequency base of the task.
-   * @apiSuccess (Success 201) {Number} body.freqOffset The frequency offset of the task.
-   * @apiSuccess (Success 201) {Number} body.timeLimit The time limit of the task.
-   * @apiSuccess (Success 201) {Number} body.scheduleOffset The schedule offset of the task.
-   * @apiSuccess (Success 201) {Number} body.points The points for the task.
-   * @apiSuccess (Success 201) {Number} body.penalty The penalty for the task.
-   * @apiSuccess (Success 201) {String} body.responsibleTaskGroup The responsible task group for the task.
+   * @apiSuccess (Success 204) body
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.
@@ -83,7 +75,7 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    * @apiError (Error 403) {Object} body Person not in house.
    * @apiError (Error 403) {String} body.error Error message.
    *
-   * @apiError (Error 404) {Object} body House not found.
+   * @apiError (Error 404) {Object} body House not found, or responsible task group not found.
    * @apiError (Error 404) {String} body.error Error message.
    *
    * @apiError (Error 500) {Object} body Internal server error.
@@ -92,8 +84,8 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
   router.post(
     "/v1/task/:houseId",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
     createTaskRequestBodyValidationMiddleware({ fieldsRequired: true }),
     svc.createTaskService.createHandler()
   );
@@ -135,9 +127,9 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
    */
   router.get(
     "/v1/task/:houseId/:taskId",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    taskIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.taskIdPathParamValidationMiddleware.createHandler(),
     svc.getDetailedTaskService.createHandler()
   );
 
@@ -180,9 +172,9 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
   router.patch(
     "/v1/task/:houseId/:taskId",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    taskIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.taskIdPathParamValidationMiddleware.createHandler(),
     createTaskRequestBodyValidationMiddleware({ fieldsRequired: false }),
     svc.updateTaskService.createHandler()
   );
@@ -215,9 +207,9 @@ export const taskRouter = (svc: TaskServices, env: Environment): Router => {
   router.delete(
     "/v1/task/:houseId/:taskId",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
-    taskIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
+    mdw.taskIdPathParamValidationMiddleware.createHandler(),
     svc.deleteTaskService.createHandler()
   );
 

@@ -1,10 +1,12 @@
 import { Router, json } from "express";
-import { GroupServices } from "../../../Bootstrap.js";
+import { GroupServices, Middleware } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
-import { houseIdParamValidationMiddleware } from "../../middleware/validation/house-id.js";
 
-export const groupRouter = (svc: GroupServices, env: Environment): Router => {
+export const groupRouter = (
+  svc: GroupServices,
+  mdw: Middleware,
+  env: Environment
+): Router => {
   const router = Router();
 
   /**
@@ -34,9 +36,9 @@ export const groupRouter = (svc: GroupServices, env: Environment): Router => {
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.get(
-    "/v1/group",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
+    "/v1/group/:houseId",
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
     svc.listGroupsService.createHandler()
   );
 
@@ -52,10 +54,10 @@ export const groupRouter = (svc: GroupServices, env: Environment): Router => {
    *
    * @apiBody {Object} body
    * @apiBody {String[]} body.addedGroups The names of groups added.
-   * @apiBody {String[]} body.removedGroupIds The ids of groups removed.
-   * @apiBody {Object[]} body.updatedGroups Groups updated.
-   * @apiBody {String} body.updatedGroups.id The id of the group.
-   * @apiBody {String} body.updatedGroups.name The new name of the group.
+   * @apiBody {String[]} body.deletedGroupIds The ids of groups deleted.
+   * @apiBody {Object[]} body.renamedGroups Groups renamed.
+   * @apiBody {String} body.renamedGroups.id The id of the group.
+   * @apiBody {String} body.renamedGroups.name The new name of the group.
    *
    * @apiSuccess (Success 204) body
    *
@@ -78,10 +80,10 @@ export const groupRouter = (svc: GroupServices, env: Environment): Router => {
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.patch(
-    "/v1/group",
+    "/v1/group/:houseId",
     json(),
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
-    houseIdParamValidationMiddleware,
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
+    mdw.houseIdPathParamValidationMiddleware.createHandler(),
     svc.updateGroupsService.createHandler()
   );
 

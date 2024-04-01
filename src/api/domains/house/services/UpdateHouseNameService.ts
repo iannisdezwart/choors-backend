@@ -13,7 +13,7 @@ export class UpdateHouseNameService extends AService {
   async run(request: Request, response: Response) {
     const personId = response.locals.authenticatedPersonId;
     const houseId = request.body.houseId;
-    const newName = request.body.new_name;
+    const newName = request.body.newName;
 
     if (!houseId) {
       return response
@@ -30,7 +30,7 @@ export class UpdateHouseNameService extends AService {
     if (!newName) {
       return response
         .status(400)
-        .json({ error: "Missing required field 'new_name'." });
+        .json({ error: "Missing required field 'newName'." });
     }
 
     if (typeof newName !== "string") {

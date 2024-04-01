@@ -25,7 +25,7 @@ export type GetHousesForPersonResult = {
 };
 
 export type HouseRow = {
-  id: number;
+  id: string;
   name: string;
   picture: string;
   inviteCode: string;
@@ -34,6 +34,7 @@ export type HouseRow = {
 export enum CreateHouseStatus {
   Success,
   PersonNotFound,
+  UnknownError,
 }
 
 export type CreateHouseResult = {

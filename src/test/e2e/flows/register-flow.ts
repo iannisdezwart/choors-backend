@@ -85,5 +85,52 @@ export const registerFlow: EndToEndFlow = {
       console.error("Token is null.");
       throw new Error();
     }
+
+    // Delete the account now.
+
+    const deleteRes = await fetch("http://localhost:9999/v1/account", {
+      method: "DELETE",
+      body: JSON.stringify({ username, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (deleteRes.status != 204) {
+      console.error("Got unexpected status", deleteRes.status, await deleteRes.json());
+      throw new Error();
+    }
+
+    // Can't login with the same username again.
+
+    const loginRes3 = await fetch("http://localhost:9999/v1/account/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const loginBody3 = await loginRes3.json();
+
+    if (loginRes3.status != 404) {
+      console.error("Got unexpected status", loginRes3.status, loginBody3);
+      throw new Error();
+    }
+
+    // Can't delete the account again.
+
+    const deleteRes2 = await fetch("http://localhost:9999/v1/account", {
+      method: "DELETE",
+      body: JSON.stringify({ username, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (deleteRes2.status != 404) {
+      console.error("Got unexpected status", deleteRes2.status);
+      throw new Error();
+    }
   },
 };

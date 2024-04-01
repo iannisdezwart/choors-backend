@@ -40,7 +40,7 @@ export class HouseRepository implements IHouseRepository {
     return {
       status: GetHousesForPersonStatus.Success,
       houses: houses.rows.map((row) => ({
-        id: row.id,
+        id: row.id.toString(),
         name: row.name,
         picture: row.picture,
         inviteCode: row.invite_code,
@@ -93,13 +93,28 @@ export class HouseRepository implements IHouseRepository {
       [name, inviteCode]
     );
 
+    const house = result.rows[0];
+
+    const addPersonToHouseResult = await this.dbPool.query(
+      "INSERT INTO person_in_house (person_id, house_id) VALUES ($1, $2)",
+      [personId, house.id]
+    );
+
+    if (addPersonToHouseResult.rowCount != 1) {
+      console.error(
+        "HouseRepository.createHouse() - Failed to add person to house.",
+        addPersonToHouseResult
+      );
+      return { status: CreateHouseStatus.UnknownError };
+    }
+
     return {
       status: CreateHouseStatus.Success,
       house: {
-        id: result.rows[0].id,
-        name: result.rows[0].name,
-        picture: result.rows[0].picture,
-        inviteCode: result.rows[0].invite_code,
+        id: house.id.toString(),
+        name: house.name,
+        picture: house.picture,
+        inviteCode: house.invite_code,
       },
     };
   }
@@ -133,9 +148,17 @@ export class HouseRepository implements IHouseRepository {
         [houseId]
       );
 
-      await this.dbPool.query("DELETE FROM house WHERE id = $1", [houseId]);
-      await this.dbPool.query("COMMIT");
+      await this.dbPool.query("DELETE FROM task WHERE house_id = $1", [
+        houseId,
+      ]);
 
+      await this.dbPool.query("DELETE FROM task_group WHERE house_id = $1", [
+        houseId,
+      ]);
+
+      await this.dbPool.query("DELETE FROM house WHERE id = $1", [houseId]);
+
+      await this.dbPool.query("COMMIT");
       return { status: DeleteHouseStatus.Success };
     } catch (exc) {
       await this.dbPool.query("ROLLBACK");

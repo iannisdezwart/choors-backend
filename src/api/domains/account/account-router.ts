@@ -1,11 +1,12 @@
 import { Router, json } from "express";
-import { AccountServices } from "../../../Bootstrap.js";
+import { AccountServices, Middleware } from "../../../Bootstrap.js";
 import { Environment } from "../../../env/Environment.js";
-import { createJwtPersonAuthenticationMiddleware } from "../../middleware/auth/authenticate-jwt.js";
-import { passwordBodyValidationMiddleware } from "../../middleware/validation/password-body.js";
-import { usernameBodyValidationMiddleware } from "../../middleware/validation/username-body.js";
 
-export const accountRouter = (svc: AccountServices, env: Environment) => {
+export const accountRouter = (
+  svc: AccountServices,
+  mdw: Middleware,
+  env: Environment
+) => {
   const router = Router();
 
   /**
@@ -36,8 +37,8 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
   router.post(
     "/v1/account",
     json(),
-    usernameBodyValidationMiddleware,
-    passwordBodyValidationMiddleware,
+    mdw.usernameBodyFieldValidationMiddleware.createHandler(),
+    mdw.passwordBodyFieldValidationMiddleware.createHandler(),
     svc.registerService.createHandler()
   );
 
@@ -72,8 +73,8 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
   router.post(
     "/v1/account/:personId",
     json(),
-    usernameBodyValidationMiddleware,
-    passwordBodyValidationMiddleware,
+    mdw.usernameBodyFieldValidationMiddleware.createHandler(),
+    mdw.passwordBodyFieldValidationMiddleware.createHandler(),
     svc.loginService.createHandler()
   );
 
@@ -102,15 +103,15 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.delete(
-    "/v1/account/:personId",
+    "/v1/account",
     json(),
-    usernameBodyValidationMiddleware,
-    passwordBodyValidationMiddleware,
+    mdw.usernameBodyFieldValidationMiddleware.createHandler(),
+    mdw.passwordBodyFieldValidationMiddleware.createHandler(),
     svc.deleteAccountService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/account/username Update username of an account. Requires password.
+   * @api {put} /v1/account/username Update username of an account. Requires password.
    * @apiName UpdateUsername
    * @apiGroup Account
    * @apiVersion 1.0.0
@@ -136,16 +137,16 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    *
    * @apiError (Error 500) {String} error Internal server error.
    */
-  router.patch(
+  router.put(
     "/v1/account/username",
     json(),
-    usernameBodyValidationMiddleware,
-    passwordBodyValidationMiddleware,
+    mdw.usernameBodyFieldValidationMiddleware.createHandler(),
+    mdw.passwordBodyFieldValidationMiddleware.createHandler(),
     svc.updateUsernameService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/account/password Update password of an account. Requires old password.
+   * @api {put} /v1/account/password Update password of an account. Requires old password.
    * @apiName UpdatePassword
    * @apiGroup Account
    * @apiVersion 1.0.0
@@ -169,16 +170,16 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    * @apiError (Error 500) {Object} body Internal server error.
    * @apiError (Error 500) {String} body.error Error message.
    */
-  router.patch(
+  router.put(
     "/v1/account/password",
     json(),
-    usernameBodyValidationMiddleware,
-    passwordBodyValidationMiddleware,
+    mdw.usernameBodyFieldValidationMiddleware.createHandler(),
+    mdw.passwordBodyFieldValidationMiddleware.createHandler(),
     svc.updatePasswordService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/account/picture Update picture of the account that is signed in.
+   * @api {put} /v1/account/picture Update picture of the account that is signed in.
    * @apiName UpdatePicture
    * @apiGroup Account
    * @apiVersion 1.0.0
@@ -203,9 +204,9 @@ export const accountRouter = (svc: AccountServices, env: Environment) => {
    * @apiError (Error 500) {Object} body Internal server error.
    * @apiError (Error 500) {String} body.error Error message.
    */
-  router.patch(
+  router.put(
     "/v1/account/picture",
-    createJwtPersonAuthenticationMiddleware(env.jwtSecret),
+    mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     svc.updatePictureService.createHandler()
   );
 

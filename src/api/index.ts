@@ -3,6 +3,7 @@ import {
   AccountServices,
   GroupServices,
   HouseServices,
+  Middleware,
   PersonServices,
   PictureServices,
   ScheduleServices,
@@ -20,6 +21,7 @@ import { loggerMiddleware } from "./middleware/logging/logger-middleware.js";
 
 export const buildAndServeApi = (
   env: Environment,
+  mdw: Middleware,
   accountServices: AccountServices,
   groupServices: GroupServices,
   houseServices: HouseServices,
@@ -32,13 +34,16 @@ export const buildAndServeApi = (
 
   // Register domain routers.
   app.use(loggerMiddleware);
-  app.use(taskRouter(taskServices, env));
-  app.use(accountRouter(accountServices, env));
+  app.use(taskRouter(taskServices, mdw, env));
+  app.use(accountRouter(accountServices, mdw, env));
   app.use(pictureRouter(pictureServices));
-  app.use(houseRouter(houseServices, env));
-  app.use(groupRouter(groupServices, env));
-  app.use(personRouter(personServices, env));
-  app.use(scheduleRouter(scheduleServices, env));
+  app.use(houseRouter(houseServices, mdw, env));
+  app.use(groupRouter(groupServices, mdw, env));
+  app.use(personRouter(personServices, mdw, env));
+  app.use(scheduleRouter(scheduleServices, mdw, env));
+  app.use((_, res) => {
+    res.status(404).send({ error: "Not found." });
+  });
 
   // Start API.
   return app.listen(env.apiPort, () => {
