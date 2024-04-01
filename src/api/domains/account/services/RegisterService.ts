@@ -3,7 +3,7 @@ import { sign } from "jsonwebtoken";
 import {
   IAccountRepository,
   RegisterPersonStatus,
-} from "../../../../repositories/AccountRepository";
+} from "../../../../repositories/IAccountRepository";
 
 export class RegisterService {
   constructor(private readonly accountRepository: IAccountRepository) {}
@@ -11,30 +11,10 @@ export class RegisterService {
   async registerPerson(request: Request, response: Response) {
     const { username, password } = request.body;
 
-    if (!username) {
-      return response.status(400).send("Missing required field 'username'.");
-    }
-
-    if (typeof username !== "string") {
-      return response
-        .status(400)
-        .send("Unexpected type of 'username' field. Expected string.");
-    }
-
     if (username.length < 3) {
       return response
         .status(400)
         .send("Username must be at least 3 characters long.");
-    }
-
-    if (!password) {
-      return response.status(400).send("Missing required field 'password'.");
-    }
-
-    if (typeof password !== "string") {
-      return response
-        .status(400)
-        .send("Unexpected type of 'password' field. Expected string.");
     }
 
     if (password.length < 8) {
@@ -48,25 +28,42 @@ export class RegisterService {
       password
     );
 
-    if (result.status == RegisterPersonStatus.UsernameTaken) {
-      return response.status(409).send("Username is already taken.");
-    }
-
-    if (result.status == RegisterPersonStatus.UnknownError) {
-      return response.status(500).send("Internal server error.");
+    switch (result.status) {
+      case RegisterPersonStatus.Success:
+        break;
+      case RegisterPersonStatus.UsernameTaken:
+        return response
+          .status(409)
+          .json({ error: "Username is already taken." });
+      case RegisterPersonStatus.UnknownError:
+        return response.status(500).json({ error: "Unknown error occurred." });
+      default:
+        console.error(
+          "RegisterService.registerPerson() - Unknown status:",
+          result.status
+        );
+        return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      console.error("JWT_SECRET environment variable is not set.");
-      return response.status(500).send("Internal server error.");
+      console.error(
+        "RegisterService.registerPerson() - JWT_SECRET environment variable is not set."
+      );
+      return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     if (result.person == null) {
-      return response.status(500).send("Internal server error.");
+      console.error("RegisterService.registerPerson() - Person is null.");
+      return response.status(500).json({ error: "Unknown error occurred." });
     }
 
     const token = sign({ person_id: result.person.id }, secret);
-    return response.status(201).send({ token });
+    return response.status(201).json({
+      token,
+      username: result.person.username,
+      picture: result.person.picture,
+      person_id: result.person.id,
+    });
   }
 }

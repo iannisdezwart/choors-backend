@@ -1,19 +1,20 @@
 import express from "express";
-import { IAccountRepository } from "../repositories/AccountRepository";
+import { IAccountRepository } from "../repositories/IAccountRepository";
+import { IPictureRepository } from "../repositories/IPictureRepository";
 import { TaskRepository } from "../repositories/TaskRepository";
 import { accountRouter } from "./domains/account/account-router";
+import { pictureRouter } from "./domains/picture/picture-router";
 
 export const buildAndServeApi = (
   taskRepository: TaskRepository,
-  accountRepository: IAccountRepository
+  accountRepository: IAccountRepository,
+  pictureRepository: IPictureRepository
 ) => {
   const app = express();
 
-  // Register middleware.
-  app.use(express.json());
-
   // Register domain routers.
-  app.use(accountRouter(accountRepository));
+  app.use(accountRouter(accountRepository, pictureRepository));
+  app.use(pictureRouter(pictureRepository));
 
   // Start API.
   const port = parseInt(process.env.PORT || "3000");

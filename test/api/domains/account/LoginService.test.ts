@@ -1,29 +1,26 @@
 import { Request, Response } from "express";
+import { LoginService } from "../../../../src/api/domains/account/services/LoginService.js";
+import { makeAccountRepositoryMock } from "../../../repositories/AccountRepositoryMock.js";
 import {
-  IAccountRepository,
   VerifyPersonResult,
-  VerifyPersonStatus,
-} from "../../../../repositories/AccountRepository.js";
-import { LoginService } from "./LoginService.js";
+  VerifyPersonStatus
+} from "../../../repositories/IAccountRepository.js";
 
 beforeAll(() => {
   process.env.JWT_SECRET = "secret";
 });
 
 test("happy path", async () => {
-  const mockedAccountRepository: jest.Mocked<IAccountRepository> = {
-    registerPerson: jest.fn(),
-    deleteAccount: jest.fn(),
-    verifyPerson: jest.fn().mockResolvedValue({
-      status: VerifyPersonStatus.Success,
-      person: {
-        id: 1,
-        username: "name",
-        pwd_hash: "hash(pwd)",
-        picture: "pic",
-      },
-    } as VerifyPersonResult),
-  };
+  const mockedAccountRepository = makeAccountRepositoryMock();
+  mockedAccountRepository.verifyPerson.mockResolvedValue({
+    status: VerifyPersonStatus.Success,
+    person: {
+      id: 1,
+      username: "name",
+      pwd_hash: "hash(pwd)",
+      picture: "pic",
+    },
+  } as VerifyPersonResult);
 
   const loginService = new LoginService(mockedAccountRepository);
 
