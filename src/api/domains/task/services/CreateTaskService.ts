@@ -4,10 +4,14 @@ import {
   CreateTaskStatus,
   ITaskRepository,
 } from "../../../../repositories/domains/task/ITaskRepository.js";
+import { ITimeProvider } from "../../../../utils/time-provider/ITimeProvider.js";
 import { AService } from "../../../util/AService.js";
 
 export class CreateTaskService extends AService {
-  constructor(private taskRepository: ITaskRepository) {
+  constructor(
+    private taskRepository: ITaskRepository,
+    private timeProvider: ITimeProvider
+  ) {
     super();
   }
 
@@ -44,7 +48,14 @@ export class CreateTaskService extends AService {
       });
     }
 
-    if (freqBaseDate.getTime() - Date.now() > ms("1y")) {
+    if (this.timeProvider.now() - freqBaseDate.getTime() > ms("1d")) {
+      return response.status(400).json({
+        error:
+          "Invalid task frequency (freqBase). First instance of task cannot be more than 24 hours ago.",
+      });
+    }
+
+    if (freqBaseDate.getTime() - this.timeProvider.now() > ms("1y")) {
       return response.status(400).json({
         error:
           "Invalid task frequency (freqBase). First instance of task must be less than a year in the future.",

@@ -53,6 +53,7 @@ import { IScheduleRepository } from "./repositories/domains/schedule/IScheduleRe
 import { ScheduleRepository } from "./repositories/domains/schedule/ScheduleRepository.js";
 import { ITaskRepository } from "./repositories/domains/task/ITaskRepository.js";
 import { TaskRepository } from "./repositories/domains/task/TaskRepository.js";
+import { ITimeProvider } from "./utils/time-provider/ITimeProvider.js";
 
 export class Repositories {
   readonly taskRepository: ITaskRepository;
@@ -194,8 +195,11 @@ export class TaskServices {
   readonly getTaskListService: GetTaskListService;
   readonly updateTaskService: UpdateTaskService;
 
-  constructor(taskRepository: ITaskRepository) {
-    this.createTaskService = new CreateTaskService(taskRepository);
+  constructor(taskRepository: ITaskRepository, timeProvider: ITimeProvider) {
+    this.createTaskService = new CreateTaskService(
+      taskRepository,
+      timeProvider
+    );
     this.deleteTaskService = new DeleteTaskService(taskRepository);
     this.getDetailedTaskService = new GetDetailedTaskService(taskRepository);
     this.getTaskListService = new GetTaskListService(taskRepository);
@@ -229,6 +233,7 @@ export class Middleware {
 
 export class Bootstrap {
   private env?: Environment;
+  private timeProvider?: ITimeProvider;
   private dbPool?: pg.Pool;
   private repositories?: Repositories;
   private accountServices?: AccountServices;
@@ -241,8 +246,12 @@ export class Bootstrap {
   private middleware?: Middleware;
   server?: ReturnType<typeof buildAndServeApi>;
 
-  public async init(envProvider: IEnvironmentProvider) {
+  public async init(
+    envProvider: IEnvironmentProvider,
+    timeProvider: ITimeProvider
+  ) {
     this.env = envProvider.getEnvironment();
+    this.timeProvider = timeProvider;
     this.dbPool = await connectToDb(this.env);
 
     this.repositories = new Repositories(this.dbPool, this.env);
@@ -262,7 +271,10 @@ export class Bootstrap {
     this.scheduleServices = new ScheduleServices(
       this.repositories.scheduleRepository!
     );
-    this.taskServices = new TaskServices(this.repositories.taskRepository!);
+    this.taskServices = new TaskServices(
+      this.repositories.taskRepository!,
+      this.timeProvider!
+    );
     this.middleware = new Middleware(
       this.repositories.accountRepository!,
       this.env

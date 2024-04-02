@@ -2,6 +2,7 @@ import bytes from "bytes";
 import { spawn } from "child_process";
 import { Bootstrap } from "../../Bootstrap.js";
 import { CustomEnvironmentProvider } from "../../env/CustomEnvironmentProvider.js";
+import { CustomTimeProvider } from "../../utils/time-provider/CustomTimeProvider.js";
 import { EndToEndFlow } from "./EndToEndFlow.js";
 import { createTasksFlow } from "./flows/create-tasks-flow.js";
 import { multiplePersonsFlow } from "./flows/multiple-persons-flow.js";
@@ -103,10 +104,12 @@ const runEndToEndTests = async () => {
     pictureStoragePath: "/tmp/pictures",
   });
 
+  const customTimeProvider = new CustomTimeProvider(new Date("2024-04-01"));
+
   await sleep(1000);
 
   const bootstrap = new Bootstrap();
-  await bootstrap.init(customEnvProvider);
+  await bootstrap.init(customEnvProvider, customTimeProvider);
   await bootstrap.run();
 
   console.log("Running tests.");
