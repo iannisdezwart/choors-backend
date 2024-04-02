@@ -1,4 +1,5 @@
 import pg from "pg";
+import { ITimeProvider } from "../../../utils/time-provider/ITimeProvider.js";
 import {
   CreateTaskResult,
   CreateTaskStatus,
@@ -6,16 +7,24 @@ import {
   DeleteTaskStatus,
   GetDetailedTaskResult,
   GetDetailedTaskStatus,
+  GetOverdueScheduledTasksResult,
+  GetOverdueScheduledTasksStatus,
   GetTasksForHouseResult,
   GetTasksForHouseStatus,
+  GetTasksToBeScheduledResult,
+  GetTasksToBeScheduledStatus,
   ITaskRepository,
+  PenaliseOverdueScheduledTaskResult,
+  PenaliseOverdueScheduledTaskStatus,
   TaskRequest,
+  UpdateNextSchedulerDateForTaskResult,
+  UpdateNextSchedulerDateForTaskStatus,
   UpdateTaskResult,
   UpdateTaskStatus,
 } from "./ITaskRepository.js";
 
 export class TaskRepository implements ITaskRepository {
-  constructor(private dbPool: pg.Pool) {}
+  constructor(private dbPool: pg.Pool, private timeProvider: ITimeProvider) {}
 
   async getTasksForHouse(
     personId: string,
@@ -106,11 +115,16 @@ export class TaskRepository implements ITaskRepository {
       return { status: CreateTaskStatus.ResponsibleGroupNotFound };
     }
 
+    const nextSchedulerDate = new Date(
+      task.freqBase.getTime() - task.freqOffset
+    );
+
     await this.dbPool.query(
       `
       INSERT INTO task (name, description, freq_base, freq_offset, time_limit,
-        schedule_offset, points, penalty, responsible_task_group_id, house_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        schedule_offset, points, penalty, responsible_task_group_id, house_id,
+        next_scheduler_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     `,
       [
         task.name,
@@ -123,6 +137,7 @@ export class TaskRepository implements ITaskRepository {
         task.penalty,
         taskGroupId,
         houseId,
+        nextSchedulerDate,
       ]
     );
 
@@ -310,5 +325,152 @@ export class TaskRepository implements ITaskRepository {
     await this.dbPool.query("DELETE FROM task WHERE id = $1", [taskId]);
 
     return { status: DeleteTaskStatus.Success };
+  }
+
+  async getTasksToBeScheduled(
+    currentTime: Date
+  ): Promise<GetTasksToBeScheduledResult> {
+    const tasks = await this.dbPool.query(
+      `
+        SELECT id, house_id, freq_base, freq_offset, time_limit, schedule_offset,
+          points, responsible_task_group_id, next_scheduler_date
+        FROM task
+        WHERE next_scheduler_date < $1
+        LIMIT 100
+      `,
+      [currentTime]
+    );
+
+    return {
+      status: GetTasksToBeScheduledStatus.Success,
+      tasks: tasks.rows.map((row) => ({
+        id: row.id.toString(),
+        houseId: row.house_id.toString(),
+        freqBase: row.freq_base,
+        freqOffset: row.freq_offset,
+        timeLimit: row.time_limit,
+        scheduleOffset: row.schedule_offset,
+        points: row.points,
+        responsibleTaskGroupId: row.responsible_task_group_id.toString(),
+        nextSchedulerDate: row.next_scheduler_date,
+      })),
+    };
+  }
+
+  async getOverdueScheduledTasks(
+    currentTime: Date
+  ): Promise<GetOverdueScheduledTasksResult> {
+    const tasks = await this.dbPool.query(
+      `
+        SELECT id, task_id, responsible_person_id, start_date, due_date
+        FROM scheduled_task
+        WHERE start_date < $1
+        LIMIT 100
+      `,
+      [currentTime]
+    );
+
+    return {
+      status: GetOverdueScheduledTasksStatus.Success,
+      tasks: tasks.rows.map((row) => ({
+        id: row.id.toString(),
+        taskId: row.task_id.toString(),
+        responsiblePersonId: row.responsible_person_id.toString(),
+        startDate: row.start_date,
+        dueDate: row.due_date,
+      })),
+    };
+  }
+
+  async penaliseOverdueScheduledTask(
+    scheduledTaskId: string
+  ): Promise<PenaliseOverdueScheduledTaskResult> {
+    const task = await this.dbPool.query(
+      `
+        SELECT scheduled_task.id, scheduled_task.task_id,
+          scheduled_task.responsible_person_id, scheduled_task.start_date,
+          scheduled_task.due_date, task.points, task.penalty
+        FROM scheduled_task, task
+        WHERE id = $1
+        AND scheduled_task.task_id = task.id
+      `,
+      [scheduledTaskId]
+    );
+
+    if (task.rowCount != 1 || task.rows[0] == null) {
+      return { status: PenaliseOverdueScheduledTaskStatus.TaskNotFound };
+    }
+
+    await this.dbPool.query("BEGIN");
+    try {
+      const completedTaskInsertionResult = await this.dbPool.query(
+        `
+          INSERT INTO completed_task (
+            task_id, responsible_person_id, completion_date, start_date,
+            due_date, points, penalty, is_penalised
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, TRUE)
+        `,
+        [
+          task.rows[0].task_id,
+          task.rows[0].responsible_person_id,
+          new Date(this.timeProvider.now()),
+          task.rows[0].start_date,
+          task.rows[0].due_date,
+          task.rows[0].points,
+          task.rows[0].penalty,
+        ]
+      );
+
+      if (completedTaskInsertionResult.rowCount != 1) {
+        console.error(
+          "TaskRepository.penaliseOverdueScheduledTask() - Failed to insert completed task."
+        );
+        await this.dbPool.query("ROLLBACK");
+        return { status: PenaliseOverdueScheduledTaskStatus.UnknownError };
+      }
+
+      const scheduledTaskDeletionResult = await this.dbPool.query(
+        "DELETE FROM scheduled_task WHERE id = $1",
+        [scheduledTaskId]
+      );
+
+      if (scheduledTaskDeletionResult.rowCount != 1) {
+        console.error(
+          "TaskRepository.penaliseOverdueScheduledTask() - Failed to delete scheduled task."
+        );
+        await this.dbPool.query("ROLLBACK");
+        return { status: PenaliseOverdueScheduledTaskStatus.UnknownError };
+      }
+
+      await this.dbPool.query("COMMIT");
+      return { status: PenaliseOverdueScheduledTaskStatus.Success };
+    } catch (exc) {
+      console.error(
+        "TaskRepository.penaliseOverdueScheduledTask() - Exception:",
+        exc
+      );
+      await this.dbPool.query("ROLLBACK");
+      throw exc;
+    }
+  }
+
+  async updateNextSchedulerDateForTask(
+    taskId: string,
+    nextSchedulerDate: Date
+  ): Promise<UpdateNextSchedulerDateForTaskResult> {
+    const task = await this.dbPool.query("SELECT * FROM task WHERE id = $1", [
+      taskId,
+    ]);
+
+    if (task.rowCount != 1 || task.rows[0] == null) {
+      return { status: UpdateNextSchedulerDateForTaskStatus.TaskNotFound };
+    }
+
+    await this.dbPool.query(
+      "UPDATE task SET next_scheduler_date = $1 WHERE id = $2",
+      [nextSchedulerDate, taskId] as any[]
+    );
+
+    return { status: UpdateNextSchedulerDateForTaskStatus.Success };
   }
 }

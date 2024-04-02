@@ -53,6 +53,8 @@ import { IScheduleRepository } from "./repositories/domains/schedule/IScheduleRe
 import { ScheduleRepository } from "./repositories/domains/schedule/ScheduleRepository.js";
 import { ITaskRepository } from "./repositories/domains/task/ITaskRepository.js";
 import { TaskRepository } from "./repositories/domains/task/TaskRepository.js";
+import { IScheduler } from "./scheduler/IScheduler.js";
+import { Scheduler } from "./scheduler/Scheduler.js";
 import { ITimeProvider } from "./utils/time-provider/ITimeProvider.js";
 
 export class Repositories {
@@ -64,14 +66,14 @@ export class Repositories {
   readonly personRepository: IPersonRepository;
   readonly scheduleRepository: IScheduleRepository;
 
-  constructor(dbPool: pg.Pool, env: Environment) {
-    this.taskRepository = new TaskRepository(dbPool);
+  constructor(dbPool: pg.Pool, env: Environment, timeProvider: ITimeProvider) {
+    this.taskRepository = new TaskRepository(dbPool, timeProvider);
     this.accountRepository = new AccountRepository(dbPool);
     this.pictureRepository = new PictureRepository(env);
     this.houseRepository = new HouseRepository(dbPool);
     this.groupRepository = new GroupRepository(dbPool);
     this.personRepository = new PersonRepository(dbPool);
-    this.scheduleRepository = new ScheduleRepository(dbPool);
+    this.scheduleRepository = new ScheduleRepository(dbPool, timeProvider);
   }
 }
 
@@ -244,7 +246,8 @@ export class Bootstrap {
   private scheduleServices?: ScheduleServices;
   private taskServices?: TaskServices;
   private middleware?: Middleware;
-  server?: ReturnType<typeof buildAndServeApi>;
+  private scheduler?: IScheduler;
+  private server?: ReturnType<typeof buildAndServeApi>;
 
   public async init(
     envProvider: IEnvironmentProvider,
@@ -253,31 +256,40 @@ export class Bootstrap {
     this.env = envProvider.getEnvironment();
     this.timeProvider = timeProvider;
     this.dbPool = await connectToDb(this.env);
-
-    this.repositories = new Repositories(this.dbPool, this.env);
+    this.repositories = new Repositories(
+      this.dbPool,
+      this.env,
+      this.timeProvider
+    );
     this.accountServices = new AccountServices(
-      this.repositories.accountRepository!,
-      this.repositories.pictureRepository!,
+      this.repositories.accountRepository,
+      this.repositories.pictureRepository,
       this.env
     );
-    this.groupServices = new GroupServices(this.repositories.groupRepository!);
-    this.houseServices = new HouseServices(this.repositories.houseRepository!);
+    this.groupServices = new GroupServices(this.repositories.groupRepository);
+    this.houseServices = new HouseServices(this.repositories.houseRepository);
     this.personServices = new PersonServices(
-      this.repositories.personRepository!
+      this.repositories.personRepository
     );
     this.pictureServices = new PictureServices(
-      this.repositories.pictureRepository!
+      this.repositories.pictureRepository
     );
     this.scheduleServices = new ScheduleServices(
-      this.repositories.scheduleRepository!
+      this.repositories.scheduleRepository
     );
     this.taskServices = new TaskServices(
-      this.repositories.taskRepository!,
-      this.timeProvider!
+      this.repositories.taskRepository,
+      this.timeProvider
     );
     this.middleware = new Middleware(
-      this.repositories.accountRepository!,
+      this.repositories.accountRepository,
       this.env
+    );
+    this.scheduler = new Scheduler(
+      this.repositories.taskRepository,
+      this.repositories.houseRepository,
+      this.timeProvider,
+      this.env,
     );
   }
 
@@ -293,6 +305,7 @@ export class Bootstrap {
       this.scheduleServices!,
       this.taskServices!
     );
+    await this.scheduler!.start();
   }
 
   public async shutdown() {

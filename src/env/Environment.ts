@@ -8,4 +8,5 @@ export type Environment = {
   dbPassword: string;
   pictureStoragePath: string;
   pictureMaxSize: number;
+  schedulerInterval: number;
 };

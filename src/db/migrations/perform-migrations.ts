@@ -108,6 +108,7 @@ const migrations: Migration[] = [
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
           responsible_task_group_id INT NOT NULL REFERENCES task_group(id),
+          next_scheduler_date DATE NOT NULL,
           active BOOLEAN NOT NULL DEFAULT TRUE,
 
           UNIQUE(name, house_id)
@@ -116,6 +117,7 @@ const migrations: Migration[] = [
         CREATE INDEX IF NOT EXISTS task_house_id_idx ON task(house_id);
         CREATE INDEX IF NOT EXISTS task_responsible_task_group_id_idx ON task(responsible_task_group_id);
         CREATE INDEX IF NOT EXISTS task_active_idx ON task(active);
+        CREATE INDEX IF NOT EXISTS task_next_scheduler_date_idx ON task(next_scheduler_date);
       `);
 
       // Scheduled task table

@@ -28,6 +28,23 @@ export interface ITaskRepository {
     houseId: string,
     taskId: string
   ): Promise<DeleteTaskResult>;
+
+  getTasksToBeScheduled(
+    currentTime: Date
+  ): Promise<GetTasksToBeScheduledResult>;
+
+  getOverdueScheduledTasks(
+    currentTime: Date
+  ): Promise<GetOverdueScheduledTasksResult>;
+
+  penaliseOverdueScheduledTask(
+    scheduledTaskId: string
+  ): Promise<PenaliseOverdueScheduledTaskResult>;
+
+  updateNextSchedulerDateForTask(
+    taskId: string,
+    nextSchedulerDate: Date
+  ): Promise<UpdateNextSchedulerDateForTaskResult>;
 }
 
 export type GetTasksForHouseResult = {
@@ -78,7 +95,7 @@ export type TaskRequest = {
 
 export type GetDetailedTaskResult = {
   status: GetDetailedTaskStatus;
-  task?: DetailedTaskResult;
+  task?: DetailedTask;
 };
 
 export enum GetDetailedTaskStatus {
@@ -88,7 +105,7 @@ export enum GetDetailedTaskStatus {
   TaskNotFound,
 }
 
-export type DetailedTaskResult = {
+export type DetailedTask = {
   id: string;
   name: string;
   description: string;
@@ -121,5 +138,62 @@ export enum DeleteTaskStatus {
   Success,
   HouseNotFound,
   PersonNotInHouse,
+  TaskNotFound,
+}
+
+export type GetTasksToBeScheduledResult = {
+  status: GetTasksToBeScheduledStatus;
+  tasks?: TaskToBeScheduled[];
+};
+
+export enum GetTasksToBeScheduledStatus {
+  Success,
+}
+
+export type TaskToBeScheduled = {
+  id: string;
+  houseId: string;
+  freqBase: Date;
+  freqOffset: number;
+  timeLimit: number;
+  scheduleOffset: number;
+  points: number;
+  responsibleTaskGroupId: string;
+  nextSchedulerDate: string;
+};
+
+export type GetOverdueScheduledTasksResult = {
+  status: GetOverdueScheduledTasksStatus;
+  tasks?: OverdueScheduledTask[];
+};
+
+export enum GetOverdueScheduledTasksStatus {
+  Success,
+}
+
+export type OverdueScheduledTask = {
+  id: string;
+  taskId: string;
+  responsiblePersonId: string;
+  startDate: Date;
+  dueDate: Date;
+};
+
+export type PenaliseOverdueScheduledTaskResult = {
+  status: PenaliseOverdueScheduledTaskStatus;
+};
+
+export enum PenaliseOverdueScheduledTaskStatus {
+  Success,
+  TaskNotFound,
+  UnknownError
+}
+
+export type UpdateNextSchedulerDateForTaskResult = {
+  status: UpdateNextSchedulerDateForTaskStatus;
+};
+
+export enum UpdateNextSchedulerDateForTaskStatus {
+  Success,
   TaskNotFound,
 }

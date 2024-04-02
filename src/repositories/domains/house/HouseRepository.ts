@@ -6,6 +6,8 @@ import {
   DeleteHouseStatus,
   GetHousesForPersonResult,
   GetHousesForPersonStatus,
+  GetPersonCurrentTasksPointsDistributionResult,
+  GetPersonCurrentTasksPointsDistributionStatus,
   IHouseRepository,
   JoinHouseResult,
   JoinHouseStatus,
@@ -228,5 +230,52 @@ export class HouseRepository implements IHouseRepository {
     );
 
     return { status: JoinHouseStatus.Success };
+  }
+
+  async getPersonCurrentTasksPointsDistribution(
+    houseId: string,
+    currentTime: Date,
+  ): Promise<GetPersonCurrentTasksPointsDistributionResult> {
+    const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
+      houseId,
+    ]);
+
+    if (house.rowCount != 1 || house.rows[0] == null) {
+      return {
+        status: GetPersonCurrentTasksPointsDistributionStatus.HouseNotFound,
+      };
+    }
+
+    const pointsPerPerson = await this.dbPool.query(
+      `
+        SELECT
+          person_id,
+          (
+            SELECT SUM(task.points)
+            FROM task, scheduled_task
+            WHERE task.id = scheduled_task.task_id
+            AND task.responsible_person_id = person_in_house.person_id
+            AND task.house_id = $1
+          ) AS scheduled_points,
+          (
+            SELECT SUM(task.points)
+            FROM task, completed_task
+            WHERE task.id = completed_task.task_id
+            AND task.responsible_person_id = person_in_house.person_id
+            AND task.house_id = $1
+            AND due_date >= $2
+          ) AS completed_points
+        FROM person_in_house
+        WHERE house_id = $1
+      `
+    );
+
+    return {
+      status: GetPersonCurrentTasksPointsDistributionStatus.Success,
+      distribution: pointsPerPerson.rows.map((row) => ({
+        personId: row.person_id.toString(),
+        points: row.scheduled_points + row.completed_points,
+      })),
+    };
   }
 }

@@ -1,4 +1,5 @@
 import pg from "pg";
+import { ITimeProvider } from "../../../utils/time-provider/ITimeProvider.js";
 import {
   ComplainAboutTaskResult,
   ComplainAboutTaskStatus,
@@ -18,7 +19,7 @@ import {
 } from "./IScheduleRepository.js";
 
 export class ScheduleRepository implements IScheduleRepository {
-  constructor(private dbPool: pg.Pool) {}
+  constructor(private dbPool: pg.Pool, private timeProvider: ITimeProvider) {}
 
   async getScheduleForPerson(
     reqPersonId: string,
@@ -257,6 +258,7 @@ export class ScheduleRepository implements IScheduleRepository {
         taskId,
       ]);
 
+      const now = new Date(this.timeProvider.now());
       await this.dbPool.query(
         `
           INSERT INTO completed_task
@@ -264,13 +266,14 @@ export class ScheduleRepository implements IScheduleRepository {
             task_id, responsible_person_id, start_date, due_date, completion_date,
             points, penalty, is_penalised
           )
-          VALUES ($1, $2, $3, $4, NOW(), $5, $6, FALSE)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, FALSE)
         `,
         [
           scheduledTaskRow.task_id,
           scheduledTaskRow.responsible_person_id,
           scheduledTaskRow.start_date,
           scheduledTaskRow.due_date,
+          now,
           scheduledTaskRow.points,
           scheduledTaskRow.penalty,
         ]
@@ -454,13 +457,14 @@ export class ScheduleRepository implements IScheduleRepository {
       return { status: ComplainAboutTaskStatus.TaskNotFound };
     }
 
+    const now = new Date(this.timeProvider.now());
     await this.dbPool.query(
       `
         INSERT INTO complaint
         (completed_task_id, complainer_person_id, complaint_date, message)
-        VALUES ($1, $2, NOW(), $3)
+        VALUES ($1, $2, $3, $4)
       `,
-      [taskId, reqPersonId, message]
+      [taskId, reqPersonId, now, message] as any[]
     );
 
     return { status: ComplainAboutTaskStatus.Success };

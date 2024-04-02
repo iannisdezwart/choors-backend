@@ -52,6 +52,11 @@ export class EnvVarEnvironmentProvider implements IEnvironmentProvider {
       throw new Error("PICTURE_MAX_SIZE environment variable is not set.");
     }
 
+    const schedulerIntervalStr = process.env.SCHEDULER_INTERVAL;
+    if (!schedulerIntervalStr) {
+      throw new Error("SCHEDULER_INTERVAL environment variable is not set.");
+    }
+
     return {
       apiPort: parseInt(apiPortStr),
       jwtSecret,
@@ -62,6 +67,7 @@ export class EnvVarEnvironmentProvider implements IEnvironmentProvider {
       dbPassword,
       pictureStoragePath,
       pictureMaxSize: bytes(pictureMaxSizeStr),
+      schedulerInterval: parseInt(schedulerIntervalStr),
     };
   }
 }

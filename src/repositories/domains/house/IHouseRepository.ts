@@ -12,6 +12,11 @@ export interface IHouseRepository {
   ): Promise<UpdateHouseNameResult>;
 
   joinHouse(personId: string, inviteCode: string): Promise<JoinHouseResult>;
+
+  getPersonCurrentTasksPointsDistribution(
+    houseId: string,
+    currentTime: Date
+  ): Promise<GetPersonCurrentTasksPointsDistributionResult>;
 }
 
 export enum GetHousesForPersonStatus {
@@ -71,4 +76,19 @@ export enum JoinHouseStatus {
 
 export type JoinHouseResult = {
   status: JoinHouseStatus;
+};
+
+export type GetPersonCurrentTasksPointsDistributionResult = {
+  status: GetPersonCurrentTasksPointsDistributionStatus;
+  distribution?: PointsDistributionEntry[];
+};
+
+export enum GetPersonCurrentTasksPointsDistributionStatus {
+  Success,
+  HouseNotFound,
+}
+
+export type PointsDistributionEntry = {
+  personId: string;
+  points: number;
 };
