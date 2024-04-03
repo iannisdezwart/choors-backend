@@ -290,7 +290,7 @@ export class Bootstrap {
       this.repositories.houseRepository,
       this.repositories.groupRepository,
       this.timeProvider,
-      this.env,
+      this.env
     );
   }
 
@@ -306,7 +306,7 @@ export class Bootstrap {
       this.scheduleServices!,
       this.taskServices!
     );
-    await this.scheduler!.start();
+    this.scheduler!.start();
   }
 
   public async shutdown() {
@@ -314,5 +314,6 @@ export class Bootstrap {
       this.server!.close(resolve);
     });
     this.dbPool!.end();
+    this.scheduler!.stop();
   }
 }
