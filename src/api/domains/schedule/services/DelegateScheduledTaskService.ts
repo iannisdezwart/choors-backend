@@ -13,13 +13,13 @@ export class DelegateScheduledTaskService extends AService {
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
-    const taskId = request.params.taskId;
+    const scheduledTaskId = request.params.scheduledTaskId;
     const personId = request.body.personId;
 
     const result = await this.scheduleRepository.delegateScheduledTask(
       reqPersonId,
       houseId,
-      taskId,
+      scheduledTaskId,
       personId
     );
 

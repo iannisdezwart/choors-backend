@@ -14,7 +14,7 @@ export class GetTaskListService extends AService {
     const personId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
 
-    if (!houseId) {
+    if (houseId == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'houseId'." });

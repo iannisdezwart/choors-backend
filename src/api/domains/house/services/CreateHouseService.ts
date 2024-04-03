@@ -15,7 +15,7 @@ export class CreateHouseService extends AService {
 
     const { name } = request.body;
 
-    if (!name) {
+    if (name == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'name'." });

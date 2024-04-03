@@ -5,7 +5,7 @@ export class PasswordBodyFieldValidationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const password = request.body.password;
 
-    if (!password) {
+    if (password == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'password'." });

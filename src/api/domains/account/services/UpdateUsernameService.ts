@@ -13,7 +13,7 @@ export class UpdateUsernameService extends AService {
   async run(request: Request, response: Response) {
     const { username, password, newUsername } = request.body;
 
-    if (!newUsername) {
+    if (newUsername == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'newUsername'." });

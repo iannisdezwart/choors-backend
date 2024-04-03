@@ -15,7 +15,7 @@ export class JwtPersonAuthenticationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const auth = request.headers.authorization;
 
-    if (!auth) {
+    if (auth == null) {
       return response
         .status(401)
         .json({ error: "Missing authorization header." });

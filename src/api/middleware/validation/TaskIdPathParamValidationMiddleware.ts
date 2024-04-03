@@ -5,7 +5,7 @@ export class TaskIdPathParamValidationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const { taskId } = request.params;
 
-    if (!taskId) {
+    if (taskId == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'taskId'." });

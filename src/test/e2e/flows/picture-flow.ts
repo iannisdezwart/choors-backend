@@ -1,4 +1,4 @@
-import { EndToEndFlow } from "../EndToEndFlow";
+import { EndToEndFlow } from "../util/EndToEndFlow";
 
 export const pictureFlow: EndToEndFlow = {
   name: "Picture Flow",

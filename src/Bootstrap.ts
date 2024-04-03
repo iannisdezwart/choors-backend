@@ -288,6 +288,7 @@ export class Bootstrap {
     this.scheduler = new Scheduler(
       this.repositories.taskRepository,
       this.repositories.houseRepository,
+      this.repositories.groupRepository,
       this.timeProvider,
       this.env,
     );

@@ -19,9 +19,10 @@ export const groupRouter = (
    *
    * @apiParam {String} houseId The id of the house.
    *
-   * @apiSuccess (Success 200) {Object[]} body List of groups.
-   * @apiSuccess (Success 200) {String} body.id The id of the group.
-   * @apiSuccess (Success 200) {String} body.name The name of the group.
+   * @apiSuccess (Success 200) {Object} body
+   * @apiSuccess (Success 200) {Object[]} body.groups List of groups.
+   * @apiSuccess (Success 200) {String} body.groups.id The id of the group.
+   * @apiSuccess (Success 200) {String} body.groups.name The name of the group.
    *
    * @apiError (Error 400) {Object} body Error due to missing or invalid fields.
    * @apiError (Error 400) {String} body.error Error message.

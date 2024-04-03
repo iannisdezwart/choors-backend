@@ -13,10 +13,10 @@ export class ComplainAboutCompletedTaskService extends AService {
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
-    const taskId = request.params.taskId;
+    const completedTaskId = request.params.completedTaskId;
     const message = request.body.message;
 
-    if (!message) {
+    if (message == null) {
       return response.status(400).json({ error: "Missing 'message' field." });
     }
 
@@ -29,7 +29,7 @@ export class ComplainAboutCompletedTaskService extends AService {
     const result = await this.scheduleRepository.complainAboutCompletedTask(
       reqPersonId,
       houseId,
-      taskId,
+      completedTaskId,
       message
     );
 

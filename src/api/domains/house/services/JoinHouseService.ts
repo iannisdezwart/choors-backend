@@ -14,7 +14,7 @@ export class JoinHouseService extends AService {
     const personId = response.locals.authenticatedPersonId;
     const inviteCode = request.body.inviteCode;
 
-    if (!inviteCode) {
+    if (inviteCode == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'inviteCode'." });

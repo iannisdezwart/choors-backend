@@ -5,7 +5,7 @@ export class PersonIdPathParamValidationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const { personId } = request.params;
 
-    if (!personId) {
+    if (personId == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'personId'." });

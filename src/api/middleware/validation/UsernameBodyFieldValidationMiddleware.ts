@@ -5,7 +5,7 @@ export class UsernameBodyFieldValidationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const username = request.body.username;
 
-    if (!username) {
+    if (username == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'username'." });

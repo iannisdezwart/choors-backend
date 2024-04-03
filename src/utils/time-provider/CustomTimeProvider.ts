@@ -10,4 +10,8 @@ export class CustomTimeProvider implements ITimeProvider {
   now() {
     return this.time;
   }
+
+  advance(ms: number) {
+    this.time += ms;
+  }
 }

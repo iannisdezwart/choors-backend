@@ -108,7 +108,8 @@ export const personRouter = (
    * @apiParam {String} houseId The id of the house.
    * @apiParam {String} personId The id of the person.
    *
-   * @apiBody {string[]} body The new groups of the person.
+   * @apiBody {Object} body
+   * @apiBody {string[]} body.groupIds The new groups ids of the person.
    *
    * @apiSuccess (Success 204) body
    *

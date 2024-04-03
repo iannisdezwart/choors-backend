@@ -106,7 +106,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async getScheduledTaskDetails(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    scheduledTaskId: string
   ): Promise<GetScheduledTaskDetailsResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
       houseId,
@@ -134,7 +134,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND scheduled_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, scheduledTaskId]
     );
 
     if (scheduledTask.rowCount != 1 || scheduledTask.rows[0] == null) {
@@ -158,7 +158,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async getCompletedTaskDetails(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    completedTaskId: string
   ): Promise<GetCompletedTaskDetailsResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
       houseId,
@@ -187,7 +187,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND completed_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, completedTaskId]
     );
 
     if (completedTask.rowCount != 1 || completedTask.rows[0] == null) {
@@ -213,7 +213,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async markScheduledTaskDone(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    scheduledTaskId: string
   ): Promise<MarkScheduledTaskDoneResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
       houseId,
@@ -243,7 +243,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND scheduled_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, scheduledTaskId]
     );
 
     if (scheduledTask.rowCount != 1 || scheduledTask.rows[0] == null) {
@@ -255,7 +255,7 @@ export class ScheduleRepository implements IScheduleRepository {
     await this.dbPool.query("BEGIN");
     try {
       await this.dbPool.query("DELETE FROM scheduled_task WHERE id = $1", [
-        taskId,
+        scheduledTaskId,
       ]);
 
       const now = new Date(this.timeProvider.now());
@@ -291,7 +291,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async markCompletedTaskUndone(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    completedTaskId: string
   ): Promise<MarkCompletedTaskUndoneResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
       houseId,
@@ -321,7 +321,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND completed_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, completedTaskId]
     );
 
     if (completedTask.rowCount != 1 || completedTask.rows[0] == null) {
@@ -333,7 +333,7 @@ export class ScheduleRepository implements IScheduleRepository {
     await this.dbPool.query("BEGIN");
     try {
       await this.dbPool.query("DELETE FROM completed_task WHERE id = $1", [
-        taskId,
+        completedTaskId,
       ]);
 
       await this.dbPool.query(
@@ -364,7 +364,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async delegateScheduledTask(
     reqPersonId: string,
     houseId: string,
-    taskId: string,
+    scheduledTaskId: string,
     personId: string
   ): Promise<DelegateScheduledTaskResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
@@ -404,7 +404,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND scheduled_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, scheduledTaskId]
     );
 
     if (scheduledTask.rowCount != 1 || scheduledTask.rows[0] == null) {
@@ -413,7 +413,7 @@ export class ScheduleRepository implements IScheduleRepository {
 
     await this.dbPool.query(
       "UPDATE scheduled_task SET responsible_person_id = $1 WHERE id = $2",
-      [personId, taskId]
+      [personId, scheduledTaskId]
     );
 
     return { status: DelegateScheduledTaskStatus.Success };
@@ -422,7 +422,7 @@ export class ScheduleRepository implements IScheduleRepository {
   async complainAboutCompletedTask(
     reqPersonId: string,
     houseId: string,
-    taskId: string,
+    completedTaskId: string,
     message: string
   ): Promise<ComplainAboutTaskResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
@@ -450,7 +450,7 @@ export class ScheduleRepository implements IScheduleRepository {
         AND completed_task.task_id = task.id
         AND task.house_id = $1
       `,
-      [houseId, taskId]
+      [houseId, completedTaskId]
     );
 
     if (completedTask.rowCount != 1 || completedTask.rows[0] == null) {
@@ -464,7 +464,7 @@ export class ScheduleRepository implements IScheduleRepository {
         (completed_task_id, complainer_person_id, complaint_date, message)
         VALUES ($1, $2, $3, $4)
       `,
-      [taskId, reqPersonId, now, message] as any[]
+      [completedTaskId, reqPersonId, now, message] as any[]
     );
 
     return { status: ComplainAboutTaskStatus.Success };

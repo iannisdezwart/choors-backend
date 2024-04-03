@@ -1,6 +1,8 @@
 import pg from "pg";
 import { ITimeProvider } from "../../../utils/time-provider/ITimeProvider.js";
 import {
+  AddScheduledTaskResult,
+  AddScheduledTaskStatus,
   CreateTaskResult,
   CreateTaskStatus,
   DeleteTaskResult,
@@ -116,7 +118,7 @@ export class TaskRepository implements ITaskRepository {
     }
 
     const nextSchedulerDate = new Date(
-      task.freqBase.getTime() - task.freqOffset
+      task.freqBase.getTime() - task.scheduleOffset
     );
 
     await this.dbPool.query(
@@ -364,7 +366,7 @@ export class TaskRepository implements ITaskRepository {
       `
         SELECT id, task_id, responsible_person_id, start_date, due_date
         FROM scheduled_task
-        WHERE start_date < $1
+        WHERE due_date < $1
         LIMIT 100
       `,
       [currentTime]
@@ -391,7 +393,7 @@ export class TaskRepository implements ITaskRepository {
           scheduled_task.responsible_person_id, scheduled_task.start_date,
           scheduled_task.due_date, task.points, task.penalty
         FROM scheduled_task, task
-        WHERE id = $1
+        WHERE scheduled_task.id = $1
         AND scheduled_task.task_id = task.id
       `,
       [scheduledTaskId]
@@ -472,5 +474,39 @@ export class TaskRepository implements ITaskRepository {
     );
 
     return { status: UpdateNextSchedulerDateForTaskStatus.Success };
+  }
+
+  async addScheduledTask(
+    taskId: string,
+    responsiblePersonId: string,
+    startDate: Date,
+    dueDate: Date
+  ): Promise<AddScheduledTaskResult> {
+    const task = await this.dbPool.query("SELECT * FROM task WHERE id = $1", [
+      taskId,
+    ]);
+
+    if (task.rowCount != 1 || task.rows[0] == null) {
+      return { status: AddScheduledTaskStatus.TaskNotFound };
+    }
+
+    const person = await this.dbPool.query(
+      "SELECT * FROM person WHERE id = $1",
+      [responsiblePersonId]
+    );
+
+    if (person.rowCount != 1 || person.rows[0] == null) {
+      return { status: AddScheduledTaskStatus.PersonNotFound };
+    }
+
+    await this.dbPool.query(
+      `
+      INSERT INTO scheduled_task (task_id, responsible_person_id, start_date, due_date)
+      VALUES ($1, $2, $3, $4)
+    `,
+      [taskId, responsiblePersonId, startDate, dueDate] as any[]
+    );
+
+    return { status: AddScheduledTaskStatus.Success };
   }
 }

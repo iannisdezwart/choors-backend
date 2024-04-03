@@ -76,7 +76,7 @@ export class PictureRepository implements IPictureRepository {
 
     const type = await fileTypeFromFile(filePath);
 
-    if (!type) {
+    if (type == null) {
       console.error(
         "PictureRepository.retrievePicture() - Failed to infer MIME type:",
         filePath

@@ -14,23 +14,23 @@ export class UpdatePersonGroupsService extends AService {
     const reqPersonId = response.locals.authenticatedPersonId;
     const personId = request.params.personId;
     const houseId = request.params.houseId;
-    const { groups } = request.body;
+    const { groupIds } = request.body;
 
-    if (!groups) {
+    if (groupIds == null) {
       return response
         .status(400)
-        .json({ error: "Missing required field 'groups'." });
+        .json({ error: "Missing required field 'groupIds'." });
     }
 
-    if (!Array.isArray(groups)) {
+    if (!Array.isArray(groupIds)) {
       return response.status(400).json({
-        error: "Unexpected type of 'groups' field. Expected array.",
+        error: "Unexpected type of 'groupIds' field. Expected array.",
       });
     }
 
-    if (groups.some((group) => typeof group !== "string")) {
+    if (groupIds.some((group) => typeof group !== "string")) {
       return response.status(400).json({
-        error: "Unexpected type of 'groups' field. Expected array of strings.",
+        error: "Unexpected type of 'groupIds' field. Expected array of strings.",
       });
     }
 
@@ -38,7 +38,7 @@ export class UpdatePersonGroupsService extends AService {
       reqPersonId,
       houseId,
       personId,
-      groups
+      groupIds
     );
 
     switch (result.status) {

@@ -13,12 +13,12 @@ export class GetScheduledTaskDetailsService extends AService {
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
-    const taskId = request.params.taskId;
+    const scheduledTaskId = request.params.scheduledTaskId;
 
     const result = await this.scheduleRepository.getScheduledTaskDetails(
       reqPersonId,
       houseId,
-      taskId
+      scheduledTaskId
     );
 
     switch (result.status) {

@@ -4,6 +4,8 @@ import {
   IGroupRepository,
   ListGroupsResult,
   ListGroupsStatus,
+  PersonsInTaskGroupResult,
+  PersonsInTaskGroupStatus,
   UpdateGroupsResult,
   UpdateGroupsStatus,
 } from "./IGroupRepository.js";
@@ -142,5 +144,23 @@ export class GroupRepository implements IGroupRepository {
 
     await this.dbPool.query("COMMIT");
     return { status: UpdateGroupsStatus.Success };
+  }
+
+  async personsInTaskGroup(
+    taskGroupId: string
+  ): Promise<PersonsInTaskGroupResult> {
+    const groups = await this.dbPool.query(
+      `
+        SELECT person_id
+        FROM person_in_task_group
+        WHERE task_group_id = $1
+      `,
+      [taskGroupId]
+    );
+
+    return {
+      status: PersonsInTaskGroupStatus.Success,
+      personsInGroup: groups.rows.map((row) => row.person_id.toString()),
+    };
   }
 }

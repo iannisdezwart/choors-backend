@@ -15,7 +15,7 @@ export const createTaskRequestBodyValidationMiddleware =
       responsibleTaskGroup,
     } = request.body;
 
-    if (options.fieldsRequired && !name) {
+    if (options.fieldsRequired && name == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'name'." });
@@ -33,7 +33,7 @@ export const createTaskRequestBodyValidationMiddleware =
         .json({ error: "Name must be at least 3 characters long." });
     }
 
-    if (options.fieldsRequired && !description) {
+    if (options.fieldsRequired && description == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'description'." });
@@ -45,7 +45,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !freqBaseStr) {
+    if (options.fieldsRequired && freqBaseStr == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'freqBase'." });
@@ -67,7 +67,7 @@ export const createTaskRequestBodyValidationMiddleware =
       }
     }
 
-    if (options.fieldsRequired && !freqOffset) {
+    if (options.fieldsRequired && freqOffset == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'freqOffset'." });
@@ -79,7 +79,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !timeLimit) {
+    if (options.fieldsRequired && timeLimit == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'timeLimit'." });
@@ -91,7 +91,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !scheduleOffset) {
+    if (options.fieldsRequired && scheduleOffset == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'scheduleOffset'." });
@@ -103,7 +103,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !points) {
+    if (options.fieldsRequired && points == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'points'." });
@@ -115,7 +115,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !penalty) {
+    if (options.fieldsRequired && penalty == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'penalty'." });
@@ -127,7 +127,7 @@ export const createTaskRequestBodyValidationMiddleware =
       });
     }
 
-    if (options.fieldsRequired && !responsibleTaskGroup) {
+    if (options.fieldsRequired && responsibleTaskGroup == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'responsibleTaskGroup'." });

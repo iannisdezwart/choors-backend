@@ -13,12 +13,18 @@ export class MarkScheduledTaskDoneService extends AService {
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
-    const taskId = request.params.taskId;
+    const scheduledTaskId = request.params.scheduledTaskId;
+
+    if (scheduledTaskId == null) {
+      return response
+        .status(400)
+        .json({ error: "Missing required parameter 'scheduledTaskId'." });
+    }
 
     const result = await this.scheduleRepository.markScheduledTaskDone(
       reqPersonId,
       houseId,
-      taskId
+      scheduledTaskId
     );
 
     switch (result.status) {

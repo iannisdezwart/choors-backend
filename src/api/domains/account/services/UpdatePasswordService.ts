@@ -13,7 +13,7 @@ export class UpdatePasswordService extends AService {
   async run(request: Request, response: Response) {
     const { username, password, newPassword } = request.body;
 
-    if (!newPassword) {
+    if (newPassword == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'newPassword'." });

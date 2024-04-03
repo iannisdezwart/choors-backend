@@ -52,7 +52,7 @@ export const scheduleRouter = (
   );
 
   /**
-   * @api {get} /v1/schedule/:houseId/scheduled-task/:taskId Get details for a scheduled task.
+   * @api {get} /v1/schedule/:houseId/scheduled-task/:scheduledTaskId Get details for a scheduled task.
    * @apiName GetScheduledTaskDetails
    * @apiGroup Schedule
    * @apiVersion 1.0.0
@@ -60,7 +60,7 @@ export const scheduleRouter = (
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} scheduledTaskId The id of the task.
    *
    * @apiSuccess (Success 200) {Object} body
    * @apiSuccess (Success 200) {String} body.task.id The id of the task.
@@ -80,15 +80,14 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.get(
-    "/v1/schedule/:houseId/scheduled-task/:taskId",
+    "/v1/schedule/:houseId/scheduled-task/:scheduledTaskId",
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getScheduledTaskDetailsService.createHandler()
   );
 
   /**
-   * @api {get} /v1/schedule/:houseId/completed-task/:taskId Get details for a completed task.
+   * @api {get} /v1/schedule/:houseId/completed-task/:completedTaskId Get details for a completed task.
    * @apiName GetCompletedTaskDetails
    * @apiGroup Schedule
    * @apiVersion 1.0.0
@@ -96,7 +95,7 @@ export const scheduleRouter = (
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} completedTaskId The id of the task.
    *
    * @apiSuccess (Success 200) {Object} body
    * @apiSuccess (Success 200) {String} body.task.id The id of the task.
@@ -118,15 +117,14 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.get(
-    "/v1/schedule/:houseId/completed-task/:taskId",
+    "/v1/schedule/:houseId/completed-task/:completedTaskId",
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.getCompletedTaskDetailsService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/schedule/:houseId/scheduled-task/:taskId/mark-done Mark a scheduled task as done.
+   * @api {patch} /v1/schedule/:houseId/scheduled-task/:scheduledTaskId/mark-done Mark a scheduled task as done.
    * @apiName MarkScheduledTaskDone
    * @apiGroup Schedule
    * @apiVersion 1.0.0
@@ -134,7 +132,7 @@ export const scheduleRouter = (
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} scheduledTaskId The id of the scheduled task.
    *
    * @apiSuccess (Success 204) body
    *
@@ -148,16 +146,15 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.patch(
-    "/v1/schedule/:houseId/scheduled-task/:taskId/mark-done",
+    "/v1/schedule/:houseId/scheduled-task/:scheduledTaskId/mark-done",
     json(),
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.markScheduledTaskDoneService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/schedule/:houseId/completed-task/:taskId/mark-undone Mark a completed task as undone.
+   * @api {patch} /v1/schedule/:houseId/completed-task/:completedTaskId/mark-undone Mark a completed task as undone.
    * @apiName MarkCompletedTaskUndone
    * @apiGroup Schedule
    * @apiVersion 1.0.0
@@ -165,7 +162,7 @@ export const scheduleRouter = (
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} completedTaskId The id of the completed task.
    *
    * @apiSuccess (Success 204) body
    *
@@ -179,24 +176,23 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.patch(
-    "/v1/schedule/:houseId/completed-task/:taskId/mark-undone",
+    "/v1/schedule/:houseId/completed-task/:completedTaskId/mark-undone",
     json(),
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.markCompletedTaskUndoneService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/schedule/:houseId/scheduled-task/:taskId/delegate Delegate a task to a person.
-   * @apiName DelegateTask
+   * @api {patch} /v1/schedule/:houseId/scheduled-task/:scheduledTaskId/delegate Delegate a task to a person.
+   * @apiName DelegateScheduledTask
    * @apiGroup Schedule
    * @apiVersion 1.0.0
    *
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} scheduledTaskId The id of the scheduled task.
    *
    * @apiBody {Object} body
    * @apiBody {String} body.personId The id of the person to delegate the task to.
@@ -213,24 +209,23 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.patch(
-    "/v1/schedule/:houseId/scheduled-task/:taskId/delegate",
+    "/v1/schedule/:houseId/scheduled-task/:scheduledTaskId/delegate",
     json(),
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.delegateScheduledTaskService.createHandler()
   );
 
   /**
-   * @api {patch} /v1/schedule/:houseId/completed-task/:taskId/complain Complain about a task.
-   * @apiName ComplainAboutTask
+   * @api {patch} /v1/schedule/:houseId/completed-task/:completedTaskId/complain Complain about a task.
+   * @apiName ComplainAboutCompletedTask
    * @apiGroup Schedule
    * @apiVersion 1.0.0
    *
    * @apiHeader {String} authorization JWT token to authenticate the user.
    *
    * @apiParam {String} houseId The id of the house.
-   * @apiParam {String} taskId The id of the task.
+   * @apiParam {String} completedTaskId The id of the task.
    *
    * @apiBody {Object} body
    * @apiBody {String} body.message The complaint message about the task.
@@ -247,11 +242,10 @@ export const scheduleRouter = (
    * @apiError (Error 500) {String} body.error Error message.
    */
   router.patch(
-    "/v1/schedule/:houseId/completed-task/:taskId/complain",
+    "/v1/schedule/:houseId/completed-task/:completedTaskId/complain",
     json(),
     mdw.jwtPersonAuthenticationMiddleware.createHandler(),
     mdw.houseIdPathParamValidationMiddleware.createHandler(),
-    mdw.personIdPathParamValidationMiddleware.createHandler(),
     svc.complainAboutCompletedTaskService.createHandler()
   );
 

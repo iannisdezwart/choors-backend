@@ -1,5 +1,5 @@
 import ms from "ms";
-import { EndToEndFlow } from "../EndToEndFlow";
+import { EndToEndFlow } from "../util/EndToEndFlow";
 
 export const createTasksFlow: EndToEndFlow = {
   name: "Create tasks",
@@ -244,7 +244,7 @@ export const createTasksFlow: EndToEndFlow = {
       (group: any) => group.name == "group2"
     );
 
-    if (!taskGroup2) {
+    if (taskGroup2 == null) {
       console.error("Expected to find group with name 'group2', but did not find in:", listTaskGroupsBody2);
       throw new Error();
     }
@@ -253,7 +253,7 @@ export const createTasksFlow: EndToEndFlow = {
       (group: any) => group.name == "group3"
     );
 
-    if (!taskGroup3) {
+    if (taskGroup3 == null) {
       console.error("Expected to find group with name 'group3', but did not find in:", listTaskGroupsBody2);
       throw new Error();
     }
@@ -262,7 +262,7 @@ export const createTasksFlow: EndToEndFlow = {
       (group: any) => group.name == "group-renamed"
     );
 
-    if (!taskGroupRenamed) {
+    if (taskGroupRenamed == null) {
       console.error("Expected to find group with name 'group-renamed', but did not find in:", listTaskGroupsBody2);
       throw new Error();
     }
@@ -364,14 +364,14 @@ export const createTasksFlow: EndToEndFlow = {
 
     const taskInGroup1 = tasks.find((task: any) => task.responsibleTaskGroup == "group-renamed");
 
-    if (!taskInGroup1) {
+    if (taskInGroup1 == null) {
       console.error("Expected to find task in group 'group-renamed', but did not find in:", tasks);
       throw new Error();
     }
 
     const taskInGroup2 = tasks.find((task: any) => task.responsibleTaskGroup == "group2-renamed");
 
-    if (!taskInGroup2) {
+    if (taskInGroup2 == null) {
       console.error("Expected to find task in group 'group2-renamed', but did not find in:", tasks);
       throw new Error();
     }

@@ -45,6 +45,13 @@ export interface ITaskRepository {
     taskId: string,
     nextSchedulerDate: Date
   ): Promise<UpdateNextSchedulerDateForTaskResult>;
+
+  addScheduledTask(
+    taskId: string,
+    responsiblePersonId: string,
+    startDate: Date,
+    dueDate: Date
+  ): Promise<AddScheduledTaskResult>;
 }
 
 export type GetTasksForHouseResult = {
@@ -159,7 +166,7 @@ export type TaskToBeScheduled = {
   scheduleOffset: number;
   points: number;
   responsibleTaskGroupId: string;
-  nextSchedulerDate: string;
+  nextSchedulerDate: Date;
 };
 
 export type GetOverdueScheduledTasksResult = {
@@ -196,4 +203,15 @@ export type UpdateNextSchedulerDateForTaskResult = {
 export enum UpdateNextSchedulerDateForTaskStatus {
   Success,
   TaskNotFound,
+}
+
+export type AddScheduledTaskResult = {
+  status: AddScheduledTaskStatus;
+};
+
+export enum AddScheduledTaskStatus {
+  Success,
+  TaskNotFound,
+  PersonNotFound,
+  UnknownError,
 }

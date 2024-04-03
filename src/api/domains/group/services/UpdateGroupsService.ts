@@ -58,8 +58,8 @@ export class UpdateGroupsService extends AService {
       renamedGroups.some(
         (group: any) =>
           typeof group !== "object" ||
-          !group.id ||
-          !group.name ||
+          group.id == null ||
+          group.name == null ||
           typeof group.id !== "string" ||
           typeof group.name !== "string"
       )

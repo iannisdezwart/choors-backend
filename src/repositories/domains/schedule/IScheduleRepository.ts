@@ -13,38 +13,38 @@ export interface IScheduleRepository {
   getScheduledTaskDetails(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    scheduledTaskId: string
   ): Promise<GetScheduledTaskDetailsResult>;
 
   getCompletedTaskDetails(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    completedTaskId: string
   ): Promise<GetCompletedTaskDetailsResult>;
 
   markScheduledTaskDone(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    scheduledTaskId: string
   ): Promise<MarkScheduledTaskDoneResult>;
 
   markCompletedTaskUndone(
     reqPersonId: string,
     houseId: string,
-    taskId: string
+    completedTaskId: string
   ): Promise<MarkCompletedTaskUndoneResult>;
 
   delegateScheduledTask(
     reqPersonId: string,
     houseId: string,
-    taskId: string,
+    scheduledTaskId: string,
     personId: string
   ): Promise<DelegateScheduledTaskResult>;
 
   complainAboutCompletedTask(
     reqPersonId: string,
     houseId: string,
-    taskId: string,
+    completedTaskId: string,
     message: string
   ): Promise<ComplainAboutTaskResult>;
 }

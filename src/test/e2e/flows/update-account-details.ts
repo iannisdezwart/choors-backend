@@ -1,4 +1,4 @@
-import { EndToEndFlow } from "../EndToEndFlow";
+import { EndToEndFlow } from "../util/EndToEndFlow";
 
 export const updateAccountDetailsFlow: EndToEndFlow = {
   name: "Update account details flow",

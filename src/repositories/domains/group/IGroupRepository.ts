@@ -8,6 +8,8 @@ export interface IGroupRepository {
     deletedGroupIds?: string[],
     renamedGroups?: Group[]
   ): Promise<UpdateGroupsResult>;
+
+  personsInTaskGroup(taskGroupId: string): Promise<PersonsInTaskGroupResult>;
 }
 
 export type Group = {
@@ -39,4 +41,13 @@ export enum UpdateGroupsStatus {
   GroupNotFound,
   TaskStillWithGroup,
   PersonStillInGroup,
+}
+
+export type PersonsInTaskGroupResult = {
+  status: PersonsInTaskGroupStatus;
+  personsInGroup?: string[];
+};
+
+export enum PersonsInTaskGroupStatus {
+  Success,
 }

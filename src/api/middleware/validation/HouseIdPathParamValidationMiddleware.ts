@@ -5,7 +5,7 @@ export class HouseIdPathParamValidationMiddleware extends AMiddleware {
   run(request: Request, response: Response, next: NextFunction) {
     const { houseId } = request.params;
 
-    if (!houseId) {
+    if (houseId == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'houseId'." });

@@ -13,12 +13,12 @@ export class GetCompletedTaskDetailsService extends AService {
   async run(request: Request, response: Response) {
     const reqPersonId = response.locals.authenticatedPersonId;
     const houseId = request.params.houseId;
-    const taskId = request.params.taskId;
+    const completedTaskId = request.params.completedTaskId;
 
     const result = await this.scheduleRepository.getCompletedTaskDetails(
       reqPersonId,
       houseId,
-      taskId
+      completedTaskId
     );
 
     switch (result.status) {

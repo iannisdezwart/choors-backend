@@ -15,7 +15,7 @@ export class UpdateHouseNameService extends AService {
     const houseId = request.body.houseId;
     const newName = request.body.newName;
 
-    if (!houseId) {
+    if (houseId == 0) {
       return response
         .status(400)
         .json({ error: "Missing required field 'houseId'." });
@@ -27,7 +27,7 @@ export class UpdateHouseNameService extends AService {
       });
     }
 
-    if (!newName) {
+    if (newName == null) {
       return response
         .status(400)
         .json({ error: "Missing required field 'newName'." });

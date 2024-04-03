@@ -1,14 +1,16 @@
 import bytes from "bytes";
+import chalk from "chalk";
 import { spawn } from "child_process";
 import { Bootstrap } from "../../Bootstrap.js";
 import { CustomEnvironmentProvider } from "../../env/CustomEnvironmentProvider.js";
 import { CustomTimeProvider } from "../../utils/time-provider/CustomTimeProvider.js";
-import { EndToEndFlow } from "./EndToEndFlow.js";
 import { createTasksFlow } from "./flows/create-tasks-flow.js";
 import { multiplePersonsFlow } from "./flows/multiple-persons-flow.js";
 import { pictureFlow } from "./flows/picture-flow.js";
 import { registerFlow } from "./flows/register-flow.js";
+import { schedulerFlow } from "./flows/scheduler-flow.js";
 import { updateAccountDetailsFlow } from "./flows/update-account-details.js";
+import { EndToEndFlow } from "./util/EndToEndFlow.js";
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => {
@@ -81,6 +83,7 @@ const flows: EndToEndFlow[] = [
   createTasksFlow,
   pictureFlow,
   multiplePersonsFlow,
+  schedulerFlow,
 ];
 
 const runEndToEndTests = async () => {
@@ -102,6 +105,7 @@ const runEndToEndTests = async () => {
     jwtSecret: "e2e_secret",
     pictureMaxSize: bytes("256kB"),
     pictureStoragePath: "/tmp/pictures",
+    schedulerInterval: 500,
   });
 
   const customTimeProvider = new CustomTimeProvider(new Date("2024-04-01"));
@@ -112,21 +116,43 @@ const runEndToEndTests = async () => {
   await bootstrap.init(customEnvProvider, customTimeProvider);
   await bootstrap.run();
 
-  console.log("Running tests.");
+  console.log(chalk.bgBlack(chalk.blueBright("Running tests.")));
+
+  let numPassed = 0;
+  let numFailed = 0;
 
   for (let i = 0; i < flows.length; i++) {
-    console.log(`Running flow ${i} (${flows[i].name}).`);
+    console.log(
+      chalk.bgBlack(chalk.yellow(`Running flow ${i} (${flows[i].name})...`))
+    );
     const flow = flows[i];
     try {
-      await flow.fn();
-      console.log(`Flow ${i} (${flow.name}) passed.`);
+      await flow.fn(customTimeProvider);
+      console.log(
+        chalk.bgBlack(chalk.green(`Flow ${i} (${flow.name}) passed.`))
+      );
+      numPassed++;
     } catch (exc) {
-      console.error(`Flow ${i} (${flow.name}) failed!!!`, exc);
+      console.error(
+        chalk.bgBlack(chalk.red(`Flow ${i} (${flow.name}) failed!!!`)),
+        exc
+      );
+      numFailed++;
     }
   }
 
   await bootstrap.shutdown();
-  console.log("Tests complete.");
+  console.log(chalk.bgBlack(chalk.blueBright("Tests complete.")));
+
+  if (numFailed === 0) {
+    console.log(chalk.bgBlack(chalk.green(`All tests passed.`)));
+  } else {
+    console.error(
+      chalk.bgBlack(
+        chalk.red(`${numFailed} tests failed!!! ${numPassed} passed.`)
+      )
+    );
+  }
 
   process.exit();
 };

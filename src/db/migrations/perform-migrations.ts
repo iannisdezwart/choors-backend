@@ -101,14 +101,14 @@ const migrations: Migration[] = [
           house_id INT NOT NULL REFERENCES house(id),
           name TEXT NOT NULL,
           description TEXT,
-          freq_base DATE NOT NULL,
-          freq_offset INTERVAL NOT NULL,
-          time_limit INTERVAL NOT NULL,
-          schedule_offset INTERVAL NOT NULL,
+          freq_base TIMESTAMP NOT NULL,
+          freq_offset INT NOT NULL,
+          time_limit INT NOT NULL,
+          schedule_offset INT NOT NULL,
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
           responsible_task_group_id INT NOT NULL REFERENCES task_group(id),
-          next_scheduler_date DATE NOT NULL,
+          next_scheduler_date TIMESTAMP NOT NULL,
           active BOOLEAN NOT NULL DEFAULT TRUE,
 
           UNIQUE(name, house_id)
@@ -126,8 +126,8 @@ const migrations: Migration[] = [
           id SERIAL PRIMARY KEY,
           task_id INT NOT NULL REFERENCES task(id),
           responsible_person_id INT NOT NULL REFERENCES person(id),
-          start_date DATE NOT NULL,
-          due_date DATE NOT NULL
+          start_date TIMESTAMP NOT NULL,
+          due_date TIMESTAMP NOT NULL
         );
 
         CREATE INDEX IF NOT EXISTS scheduled_task_task_id_idx ON scheduled_task(task_id);
@@ -140,9 +140,9 @@ const migrations: Migration[] = [
           id SERIAL PRIMARY KEY,
           task_id INT NOT NULL REFERENCES task(id),
           responsible_person_id INT NOT NULL REFERENCES person(id),
-          completion_date DATE NOT NULL,
-          start_date DATE NOT NULL,
-          due_date DATE NOT NULL,
+          completion_date TIMESTAMP NOT NULL,
+          start_date TIMESTAMP NOT NULL,
+          due_date TIMESTAMP NOT NULL,
           points FLOAT NOT NULL,
           penalty FLOAT NOT NULL,
           is_penalised BOOLEAN NOT NULL
@@ -158,7 +158,7 @@ const migrations: Migration[] = [
         CREATE TABLE IF NOT EXISTS complaint (
           completed_task_id INT NOT NULL REFERENCES completed_task(id),
           complainer_person_id INT NOT NULL REFERENCES person(id),
-          complaint_date DATE NOT NULL,
+          complaint_date TIMESTAMP NOT NULL,
           message TEXT NOT NULL,
 
           PRIMARY KEY(completed_task_id, complainer_person_id)

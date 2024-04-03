@@ -150,9 +150,24 @@ export class HouseRepository implements IHouseRepository {
         [houseId]
       );
 
+      await this.dbPool.query(
+        "DELETE FROM scheduled_task WHERE task_id IN (SELECT id FROM task WHERE house_id = $1)",
+        [houseId]
+      );
+
+      await this.dbPool.query(
+        "DELETE FROM completed_task WHERE task_id IN (SELECT id FROM task WHERE house_id = $1)",
+        [houseId]
+      );
+
       await this.dbPool.query("DELETE FROM task WHERE house_id = $1", [
         houseId,
       ]);
+
+      await this.dbPool.query(
+        "DELETE FROM person_in_task_group WHERE task_group_id IN (SELECT id FROM task_group WHERE house_id = $1)",
+        [houseId]
+      );
 
       await this.dbPool.query("DELETE FROM task_group WHERE house_id = $1", [
         houseId,
@@ -234,7 +249,7 @@ export class HouseRepository implements IHouseRepository {
 
   async getPersonCurrentTasksPointsDistribution(
     houseId: string,
-    currentTime: Date,
+    currentTime: Date
   ): Promise<GetPersonCurrentTasksPointsDistributionResult> {
     const house = await this.dbPool.query("SELECT * FROM house WHERE id = $1", [
       houseId,
@@ -254,20 +269,21 @@ export class HouseRepository implements IHouseRepository {
             SELECT SUM(task.points)
             FROM task, scheduled_task
             WHERE task.id = scheduled_task.task_id
-            AND task.responsible_person_id = person_in_house.person_id
+            AND scheduled_task.responsible_person_id = person_in_house.person_id
             AND task.house_id = $1
           ) AS scheduled_points,
           (
             SELECT SUM(task.points)
             FROM task, completed_task
             WHERE task.id = completed_task.task_id
-            AND task.responsible_person_id = person_in_house.person_id
+            AND completed_task.responsible_person_id = person_in_house.person_id
             AND task.house_id = $1
             AND due_date >= $2
           ) AS completed_points
         FROM person_in_house
         WHERE house_id = $1
-      `
+      `,
+      [houseId, currentTime] as any[]
     );
 
     return {
