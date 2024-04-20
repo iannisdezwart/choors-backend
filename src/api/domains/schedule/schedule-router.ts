@@ -24,15 +24,15 @@ export const scheduleRouter = (
    * @apiSuccess (Success 200) {Object[]} body.schedule The schedule for the person.
    * @apiSuccess (Success 200) {String} body.schedule.id The id of the task.
    * @apiSuccess (Success 200) {String} body.schedule.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.schedule.dueDate The due date for the task.
-   * @apiSuccess (Success 200) {String} body.schedule.points The points for the task.
+   * @apiSuccess (Success 200) {Date} body.schedule.dueDate The due date for the task.
+   * @apiSuccess (Success 200) {Number} body.schedule.points The points for the task.
    * @apiSuccess (Success 200) {Object[]} body.history The schedule for the person.
    * @apiSuccess (Success 200) {String} body.history.id The id of the task.
    * @apiSuccess (Success 200) {String} body.history.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.history.dueDate The due date for the task.
-   * @apiSuccess (Success 200) {String} body.history.points The points for the task.
-   * @apiSuccess (Success 200) {String} body.history.penalty The penalty for the task.
-   * @apiSuccess (Success 200) {String} body.history.isPenalised Whether the task is penalised.
+   * @apiSuccess (Success 200) {Date} body.history.dueDate The due date for the task.
+   * @apiSuccess (Success 200) {Number} body.history.points The points for the task.
+   * @apiSuccess (Success 200) {Number} body.history.penalty The penalty for the task.
+   * @apiSuccess (Success 200) {Boolean} body.history.isPenalised Whether the task is penalised.
    *
    * @apiError (Error 403) {Object} body Requesting person not in house.
    * @apiError (Error 403) {String} body.error Error message.
@@ -65,8 +65,8 @@ export const scheduleRouter = (
    * @apiSuccess (Success 200) {Object} body
    * @apiSuccess (Success 200) {String} body.task.id The id of the task.
    * @apiSuccess (Success 200) {String} body.task.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.task.dueDate The due date for the task.
-   * @apiSuccess (Success 200) {String} body.task.points The points for the task.
+   * @apiSuccess (Success 200) {Date} body.task.dueDate The due date for the task.
+   * @apiSuccess (Success 200) {Number} body.task.points The points for the task.
    * @apiSuccess (Success 200) {String} body.task.description The description of the task.
    * @apiSuccess (Success 200) {String} body.task.responsiblePerson The name of the responsible person.
    *
@@ -100,12 +100,12 @@ export const scheduleRouter = (
    * @apiSuccess (Success 200) {Object} body
    * @apiSuccess (Success 200) {String} body.task.id The id of the task.
    * @apiSuccess (Success 200) {String} body.task.name The name of the task.
-   * @apiSuccess (Success 200) {String} body.task.dueDate The due date for the task.
-   * @apiSuccess (Success 200) {String} body.task.points The points for the task.
+   * @apiSuccess (Success 200) {Date} body.task.dueDate The due date for the task.
+   * @apiSuccess (Success 200) {Number} body.task.points The points for the task.
    * @apiSuccess (Success 200) {String} body.task.description The description of the task.
    * @apiSuccess (Success 200) {String} body.task.responsiblePerson The name of the responsible person.
-   * @apiSuccess (Success 200) {String} body.task.penalty The penalty for the task.
-   * @apiSuccess (Success 200) {String} body.task.isPenalised Whether the task is penalised.
+   * @apiSuccess (Success 200) {Number} body.task.penalty The penalty for the task.
+   * @apiSuccess (Success 200) {Boolean} body.task.isPenalised Whether the task is penalised.
    *
    * @apiError (Error 403) {Object} body Requesting person not in house.
    * @apiError (Error 403) {String} body.error Error message.
